@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.7.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>PHP_Mailman</name>
+ <channel>pear.php.net</channel>
+ <summary>Integrates Mailman into a website using PHP</summary>
+ <description>PHP Mailman allows the easy integration of Mailman into a dynamic website without using Python or requiring permission to Mailman binaries</description>
+ <lead>
+  <name>James Wade</name>
+  <user>hm2k</user>
+  <email>hm2k@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2011-09-06</date>
+ <time></time>
+ <version>
+  <release>2.0</release>
+  <api>2.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license">BSD License</license>
+ <notes>Converted php-mailman to PHP_Mailman PEAR Package</notes>
+ <contents>
+  <dir name="/">
+   <file name="PHP/Mailman.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
+   <file baseinstalldir="PHP_Mailman" name="examples/mailman-newsletter.php" role="doc" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <phprelease />
+ <changelog>
+  <release>
+   <version>
+    <release>2.0</release>
+    <api>2.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <date>2011-09-06</date>
+   <license uri="http://www.opensource.org/licenses/bsd-license">BSD License</license>
+   <notes>Converted php-mailman to PHP_Mailman PEAR Package</notes>
+  </release>
+ </changelog>
+</package>
