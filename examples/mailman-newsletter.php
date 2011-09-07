@@ -2,9 +2,9 @@
 
 //Settings
 $notice='';
-$_mmurl='http://example.co.uk/mailman/admin/';
+$_mmurl='http://example.co.uk/mailman/admin';
 $_mmlist='newsletter_example.co.uk';
-$_mmpw='password';
+$_mmpw='password-cannot-have-spaces';
 $_mmsub='Yey! Thanks for joining our newsletter.';
 $_mmunsub='Sorry to see you go :(';
 $_mmerror='There was some kind of error, check and try again.';
@@ -40,7 +40,7 @@ $_mmerror='There was some kind of error, check and try again.';
 		<input type="text" name="email" id="input_email">
 	</div>
 	<div>
-		<input type="radio" id="input_sub" name="sub" value="1">
+		<input type="radio" id="input_sub" name="sub" value="1" checked>
 		<label for="input_sub">Subscribe</label>
 		<br>
 		<input type="radio" id="input_unsub" name="sub" value="0">
