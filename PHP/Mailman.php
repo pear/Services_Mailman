@@ -55,23 +55,22 @@ class Mailman
      * The URL to the Mailman "Admin Links" page (no trailing slash)
      * @var string
      */
-    private var $adminurl = 'http://www.example.co.uk/mailman/admin';
+    private $adminurl = 'http://www.example.co.uk/mailman/admin';
     /**
      * Default name of the list
      * @var string
      */
-    private var $list = '';
+    private $list = '';
     /**
      * Default admin password for the aforementioned list
      * @var string
      */
-    private var $adminpw = '';
+    private $adminpw = '';
     /**
      * Holder for any error messages
      * @var string
-     * @access public
      */
-    public var $error;
+    public $error;
     /**
      * The class constructor
      *
