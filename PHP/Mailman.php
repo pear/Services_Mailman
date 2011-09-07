@@ -5,7 +5,7 @@
  * PHP Mailman allows the integration of Mailman into a dynamic website without
  *      using Python or requiring permission to Mailman binaries
  *
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification,
@@ -55,17 +55,17 @@ class Mailman
      * The URL to the Mailman "Admin Links" page (no trailing slash)
      * @var string
      */
-    private $adminurl = 'http://www.example.co.uk/mailman/admin';
+    public $adminurl = 'http://www.example.co.uk/mailman/admin';
     /**
      * Default name of the list
      * @var string
      */
-    private $list = '';
+    public $list = 'test_example.co.uk';
     /**
-     * Default admin password for the aforementioned list
+     * Default admin password for the list
      * @var string
      */
-    private $adminpw = '';
+    public $adminpw = 'passwords-cannot-have-spaces';
     /**
      * Holder for any error messages
      * @var string
@@ -74,17 +74,44 @@ class Mailman
     /**
      * The class constructor
      *
-     * @param string $adminurl Sets the class variable
-     * @param string $list     Sets the class variable
-     * @param string $adminpw  Sets the class variable
+     * @param string $adminurl Set the URL to the Mailman "Admin Links" page
+     * @param string $list     Set the name of the list
+     * @param string $adminpw  Set admin password of the list
      *
      * @return void
      */
-    public function __construct($adminurl, $list = false, $adminpw = false)
+    public function __construct($adminurl, $list = '', $adminpw = '')
     {
-        $this->adminurl = $adminurl;
-        $this->list = $list;
-        $this->adminpw = $adminpw;
+        // Sanity checks
+        if (!is_string($adminurl)) {
+            user_error(
+                'Mailman expects parameter 1 to be string, ' .
+                gettype($adminurl) . ' given', E_USER_WARNING
+            );
+            return;
+        }
+        if (!is_string($list)) {
+            user_error(
+                'Mailman expects parameter 2 to be string, ' .
+                gettype($list) . ' given', E_USER_WARNING
+            );
+            return;
+        }
+        if (!is_string($adminpw)) {
+            user_error(
+                'Mailman expects parameter 3 to be string, ' .
+                gettype($adminpw) . ' given', E_USER_WARNING
+            );
+            return;
+        }
+
+        $this->adminurl = trim($adminurl, '/');
+        if ($list) {
+            $this->list = $list;
+        }
+        if ($adminpw) {
+            $this->adminpw = $adminpw;
+        }
     }
     /**
      * Fetches the HTML to be parsed
@@ -95,7 +122,18 @@ class Mailman
      */
     private function _fetch($url)
     {
-        return file_get_contents($url);
+        $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
+        if (!$url) {
+            $this->error='Invalid URL';
+            return false;
+        }
+        $html = @file_get_contents($url);
+        if ($html && preg_match('#<HTML>#i', $html)) {
+            return $html;
+        } else {
+            $this->error='Unable to fetch HTML';
+            return false;
+        }
     }
     /**
      * List lists
@@ -109,9 +147,17 @@ class Mailman
     public function lists($assoc = true)
     {
         $html = $this->_fetch($this->adminurl);
-        $match = '#<tr.*?>\s+<td><a href="(.+?)"><strong>(.+?)</strong></a></td>\s+<td><em>(.+?)</em></td>\s+</tr>#i';
+        if (!$html) {
+            return false;
+        }
+        $match = '#<tr.*?>\s+<td><a href="(.+?)"><strong>(.+?)</strong></a></td>\s+';
+        $match .= '<td><em>(.+?)</em></td>\s+</tr>#i';
         $a = array();
         if (preg_match_all($match, $html, $m)) {
+            if (!$m) {
+                $this->error='Unable to match any lists';
+                return false;
+            }
             foreach ($m[0] as $k => $v) {
                 $a[$k][] = $m[1][$k];
                 $a[$k][] = $m[2][$k];
@@ -141,6 +187,9 @@ class Mailman
         $path = sprintf($path, $this->list, $email, $this->adminpw);
         $url = $this->adminurl . $path;
         $html = $this->_fetch($url);
+        if (!$html) {
+            return false;
+        }
         //TODO:parse html
         return $html;
     }
@@ -160,16 +209,16 @@ class Mailman
         $path = sprintf($path, $this->list, $email, $this->adminpw);
         $url = $this->adminurl . $path;
         $html = $this->_fetch($url);
+        if (!$html) {
+            return false;
+        }
         if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
             $this->error = false;
             return true;
-        } else {
-            preg_match('#<h3>(.+?)</h3>#i', $html, $m);
+        } elseif (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
             $this->error = trim(strip_tags($m[1]), ':');
             return false;
         }
-        $this->error = true;
-        return false;
     }
     /**
      * Subscribe
@@ -179,29 +228,29 @@ class Mailman
      *      &subscribees_upload=<email-address>&adminpw=<adminpassword>)
      *
      * @param string  $email  Valid email address to subscribe
-     * @param integer $invite Send an invite or not (default)
+     * @param boolean $invite Send an invite or not (default)
      *
      * @return boolean Returns whether it was successful or not
      */
-    public function subscribe($email, $invite = 0)
+    public function subscribe($email, $invite = false)
     {
         $path = '/%s/members/add?subscribe_or_invite=%d&send_welcome_msg_to_this_batch=0&notification_to_list_owner=0&subscribees_upload=%s&adminpw=%s';
         $path = sprintf($path, $this->list, (int)$invite, $email, $this->adminpw);
         $url = $this->adminurl . $path;
         $html = $this->_fetch($url);
+        if (!$html) {
+            return false;
+        }
         if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
             $this->error = false;
             return true;
-        } else {
-            preg_match('#<h5>(.+?)</h5>#i', $html, $m);
+        } elseif (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
             $this->error = trim(strip_tags($m[1]), ':');
             return false;
         }
-        $this->error = true;
-        return false;
     }
     /**
-     * Set digest (you have to first subscribe them using URL above, then set digest):
+     * Set digest. Note that the $email needs to be subsribed first (e.g. by using the {@link subsribe()} method)
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?user=<email-address>
      *      &<email-address>_digest=1&setmemberopts_btn=Submit%20Your%20Changes
@@ -219,6 +268,9 @@ class Mailman
         $path = sprintf($path, $this->list, $email, $email, $email, $email, $this->adminpw);
         $url = $this->adminurl . $path;
         $html = $this->_fetch($url);
+        if (!$html) {
+            return false;
+        }
         //TODO:parse html
         return $html;
     }
@@ -232,8 +284,14 @@ class Mailman
         //get the letters
         $url = $this->adminurl . sprintf('/%s/members?adminpw=%s', $this->list, $this->adminpw);
         $html = $this->_fetch($url);
+        if (!$html) {
+            return false;
+        }
         $p = '#<a href=".*?letter=(.)">.+?</a>#i';
-        preg_match_all($p, $html, $m);
+        if (!preg_match_all($p, $html, $m)) {
+            $this->error='Unable to match any members';
+            return false;
+        }
         $letters = array_pop($m);
         //do the loop
         $members = array(array(), array());
@@ -258,9 +316,13 @@ class Mailman
     {
         $url = $this->adminurl . sprintf('/%s/?adminpw=%s', $this->list, $this->adminpw);
         $html = $this->_fetch($url);
+        if (!$html) {
+            return false;
+        }
         $p = '#<td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version (.+?)</td>#i';
-        preg_match($p, $html, $m);
-        return array_pop($m);
+        if (preg_match($p, $html, $m)) {
+            return array_pop($m);
+        }
     }
 } //end
 //eof
