@@ -90,8 +90,7 @@ class Mailman
      *
      * @return mixed
      */
-    public function __construct($adminurl, $list = '', $adminpw = '',
-        HTTP_Request2 $req = null)
+    public function __construct($adminurl, $list = '', $adminpw = '', HTTP_Request2 $req = null)
     {
         $this->setList($list);
         $this->setAdminURL($adminurl);
@@ -180,7 +179,7 @@ class Mailman
         }
         if (is_object($this->req)) {
             return true;
-        else {
+        } else {
             $this->setError("Unable to create instance of HTTP_Request2");
             return false;
         }
@@ -194,29 +193,25 @@ class Mailman
      */
     protected function setError($message)
     {
-        return $this->error=$message;
+        return $this->error = $message;
     }
     /**
      * Get the error class variable
-     *
-     * @param string $message The error message
      *
      * @return string Returns error message
      */
     protected function getError()
     {
-        return $this->error?$this->error:'';
+        return $this->error ? $this->error : '';
     }
     /**
      * Has the error class variable got a value?
-     *
-     * @param string $message The error message
      *
      * @return boolean Returns whether theres a value or not
      */
     protected function hasError()
     {
-        return $this->error?1:0;
+        return $this->error ? 1 : 0;
     }
     /**
      * Fetches the HTML to be parsed
