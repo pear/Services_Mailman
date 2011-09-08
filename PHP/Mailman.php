@@ -70,7 +70,7 @@ class Mailman
      * Holder for any error messages
      * @var string
      */
-    protected $error;
+    protected $error = '';
     /**
      * The class constructor
      *
@@ -84,21 +84,21 @@ class Mailman
     {
         // Sanity checks
         if (!is_string($adminurl)) {
-            user_error(
+            $this->setError(
                 'Mailman expects parameter 1 to be string, ' .
                 gettype($adminurl) . ' given', E_USER_WARNING
             );
             return;
         }
         if (!is_string($list)) {
-            user_error(
+            $this->setError(
                 'Mailman expects parameter 2 to be string, ' .
                 gettype($list) . ' given', E_USER_WARNING
             );
             return;
         }
         if (!is_string($adminpw)) {
-            user_error(
+            $this->setError(
                 'Mailman expects parameter 3 to be string, ' .
                 gettype($adminpw) . ' given', E_USER_WARNING
             );
@@ -114,6 +114,39 @@ class Mailman
         }
     }
     /**
+     * Sets the $error class variable
+     *
+     * @param string $message The error message
+     *
+     * @return boolean Returns whether it was set or not
+     */
+    protected function setError($message)
+    {
+        return $this->error=$message;
+    }
+    /**
+     * Get the $error class variable
+     *
+     * @param string $message The error message
+     *
+     * @return string Returns error message
+     */
+    protected function getError()
+    {
+        return $this->error?$this->error:'';
+    }
+    /**
+     * Has the $error class variable got a value?
+     *
+     * @param string $message The error message
+     *
+     * @return boolean Returns whether theres a value or not
+     */
+    protected function hasError()
+    {
+        return $this->error?1:0;
+    }
+    /**
      * Fetches the HTML to be parsed
      *
      * @param string $url A valid URL to fetch
@@ -124,14 +157,14 @@ class Mailman
     {
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
-            $this->error='Invalid URL';
+            $this->setError('Invalid URL');
             return false;
         }
         $html = @file_get_contents($url);
         if ($html && preg_match('#<HTML>#i', $html)) {
             return $html;
         } else {
-            $this->error='Unable to fetch HTML';
+            $this->setError('Unable to fetch HTML');
             return false;
         }
     }
@@ -155,7 +188,7 @@ class Mailman
         $a = array();
         if (preg_match_all($match, $html, $m)) {
             if (!$m) {
-                $this->error='Unable to match any lists';
+                $this->setError('Unable to match any lists');
                 return false;
             }
             foreach ($m[0] as $k => $v) {
@@ -213,10 +246,10 @@ class Mailman
             return false;
         }
         if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
-            $this->error = false;
+            $this->setError('');
             return true;
         } elseif (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
-            $this->error = trim(strip_tags($m[1]), ':');
+            $this->setError(trim(strip_tags($m[1]), ':'));
             return false;
         }
     }
@@ -242,10 +275,10 @@ class Mailman
             return false;
         }
         if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
-            $this->error = false;
+            $this->setError('');
             return true;
         } elseif (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
-            $this->error = trim(strip_tags($m[1]), ':');
+            $this->setError(trim(strip_tags($m[1]), ':'));
             return false;
         }
     }
@@ -289,7 +322,7 @@ class Mailman
         }
         $p = '#<a href=".*?letter=(.)">.+?</a>#i';
         if (!preg_match_all($p, $html, $m)) {
-            $this->error='Unable to match any members';
+            $this->setError('Unable to match any members');
             return false;
         }
         $letters = array_pop($m);
