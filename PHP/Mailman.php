@@ -38,6 +38,9 @@
  * @version   SVN: @package_version@
  * @link      http://pear.php.net/package/Mailman
  */
+
+require_once 'HTTP/Request2.php';
+
 /**
  * Mailman Class
  *
@@ -72,49 +75,118 @@ class Mailman
      */
     protected $error = '';
     /**
+     * Instance of {@link HTTP_Request2}
+     *
+     * @var object $req Instance of {@link HTTP_Request2}
+     */
+    protected $req = null;
+    /**
      * The class constructor
      *
      * @param string $adminurl Set the URL to the Mailman "Admin Links" page
      * @param string $list     Set the name of the list
      * @param string $adminpw  Set admin password of the list
+     * @param object $req      Provide your own {@link HTTP_Request2} instance
      *
      * @return mixed
      */
-    public function __construct($adminurl, $list = '', $adminpw = '')
+    public function __construct($adminurl, $list = '', $adminpw = '',
+        HTTP_Request2 $req = null)
     {
-        // Sanity checks
-        if (!is_string($adminurl)) {
+        $this->setList($list);
+        $this->setAdminURL($adminurl);
+        $this->setAdminPW($adminpw);
+        $this->setReq($req);
+    }
+    /**
+     * Sets the list class variable
+     *
+     * @param string $string The password string
+     *
+     * @return boolean Returns whether it was set or not
+     */
+    protected function setList($string)
+    {
+        if (!is_string($string)) {
             $this->setError(
-                'Mailman expects parameter 1 to be string, ' .
-                gettype($adminurl) . ' given', E_USER_WARNING
+                __METHOD__ . ' expects parameter 1 to be string, ' .
+                gettype($string) . ' given'
             );
             return;
         }
-        if (!is_string($list)) {
+        return $this->list = $string;
+    }
+    /**
+     * Sets the adminurl class variable
+     *
+     * @param string $string The password string
+     *
+     * @return boolean Returns whether it was set or not
+     */
+    protected function setAdminURL($string)
+    {
+        if (!is_string($string)) {
             $this->setError(
-                'Mailman expects parameter 2 to be string, ' .
-                gettype($list) . ' given', E_USER_WARNING
+                __METHOD__ . ' expects parameter 1 to be string, ' .
+                gettype($string) . ' given'
             );
             return;
         }
-        if (!is_string($adminpw)) {
+        $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
+        if (!$string) {
+            $this->setError('Invalid URL');
+            return false;
+        }
+        return $this->adminurl = trim($string, '/');
+    }
+    /**
+     * Sets the adminpw class variable
+     *
+     * @param string $string The password string
+     *
+     * @return boolean Returns whether it was set or not
+     */
+    protected function setAdminPW($string)
+    {
+        if (!is_string($string)) {
             $this->setError(
-                'Mailman expects parameter 3 to be string, ' .
-                gettype($adminpw) . ' given', E_USER_WARNING
+                __METHOD__ . ' expects parameter 1 to be string, ' .
+                gettype($string) . ' given'
             );
             return;
+        }
+        return $this->adminpw = $string;
+    }
+    /**
+     * Sets the req class variable
+     *
+     * @param object $object The HTTP_Request2 object
+     *
+     * @return boolean Returns whether it was set or not
+     */
+    protected function setReq($object)
+    {
+        if (!is_object($object)) {
+            $this->setError(
+                __METHOD__ . ' expects parameter 1 to be object, ' .
+                gettype($object) . ' given'
+            );
         }
 
-        $this->adminurl = trim($adminurl, '/');
-        if ($list) {
-            $this->list = $list;
+        if ($object instanceof HTTP_Request2) {
+            $this->req = $object;
+        } else {
+            $this->req = new HTTP_Request2();
         }
-        if ($adminpw) {
-            $this->adminpw = $adminpw;
+        if (is_object($this->req)) {
+            return true;
+        else {
+            $this->setError("Unable to create instance of HTTP_Request2");
+            return false;
         }
     }
     /**
-     * Sets the $error class variable
+     * Sets the error class variable
      *
      * @param string $message The error message
      *
@@ -125,7 +197,7 @@ class Mailman
         return $this->error=$message;
     }
     /**
-     * Get the $error class variable
+     * Get the error class variable
      *
      * @param string $message The error message
      *
@@ -136,7 +208,7 @@ class Mailman
         return $this->error?$this->error:'';
     }
     /**
-     * Has the $error class variable got a value?
+     * Has the error class variable got a value?
      *
      * @param string $message The error message
      *
@@ -160,7 +232,9 @@ class Mailman
             $this->setError('Invalid URL');
             return false;
         }
-        $html = @file_get_contents($url);
+        $this->req->setUrl($url);
+        $this->req->setMethod('GET');
+        $html = $this->req->send()->getBody();
         if ($html && preg_match('#<HTML>#i', $html)) {
             return $html;
         } else {
