@@ -55,22 +55,22 @@ class Mailman
      * The URL to the Mailman "Admin Links" page (no trailing slash)
      * @var string
      */
-    public $adminurl = 'http://www.example.co.uk/mailman/admin';
+    protected $adminurl = 'http://www.example.co.uk/mailman/admin';
     /**
      * Default name of the list
      * @var string
      */
-    public $list = 'test_example.co.uk';
+    protected $list = 'test_example.co.uk';
     /**
      * Default admin password for the list
      * @var string
      */
-    public $adminpw = 'passwords-cannot-have-spaces';
+    protected $adminpw = 'passwords-cannot-have-spaces';
     /**
      * Holder for any error messages
      * @var string
      */
-    public $error;
+    protected $error;
     /**
      * The class constructor
      *
@@ -78,7 +78,7 @@ class Mailman
      * @param string $list     Set the name of the list
      * @param string $adminpw  Set admin password of the list
      *
-     * @return void
+     * @return mixed
      */
     public function __construct($adminurl, $list = '', $adminpw = '')
     {
@@ -120,7 +120,7 @@ class Mailman
      *
      * @return string Return contents from URL (usually HTML)
      */
-    private function _fetch($url)
+    protected function fetch($url)
     {
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
@@ -146,7 +146,7 @@ class Mailman
      */
     public function lists($assoc = true)
     {
-        $html = $this->_fetch($this->adminurl);
+        $html = $this->fetch($this->adminurl);
         if (!$html) {
             return false;
         }
@@ -186,7 +186,7 @@ class Mailman
         $path = '/%s/members?findmember=%s&setmemberopts_btn&adminpw=%s';
         $path = sprintf($path, $this->list, $email, $this->adminpw);
         $url = $this->adminurl . $path;
-        $html = $this->_fetch($url);
+        $html = $this->fetch($url);
         if (!$html) {
             return false;
         }
@@ -208,7 +208,7 @@ class Mailman
         $path = '/%s/members/remove?send_unsub_ack_to_this_batch=0&send_unsub_notifications_to_list_owner=0&unsubscribees_upload=%s&adminpw=%s';
         $path = sprintf($path, $this->list, $email, $this->adminpw);
         $url = $this->adminurl . $path;
-        $html = $this->_fetch($url);
+        $html = $this->fetch($url);
         if (!$html) {
             return false;
         }
@@ -237,7 +237,7 @@ class Mailman
         $path = '/%s/members/add?subscribe_or_invite=%d&send_welcome_msg_to_this_batch=0&notification_to_list_owner=0&subscribees_upload=%s&adminpw=%s';
         $path = sprintf($path, $this->list, (int)$invite, $email, $this->adminpw);
         $url = $this->adminurl . $path;
-        $html = $this->_fetch($url);
+        $html = $this->fetch($url);
         if (!$html) {
             return false;
         }
@@ -267,7 +267,7 @@ class Mailman
 		%s&%s_digest=1&setmemberopts_btn=Submit%20Your%20Changes&allmodbit_val=0&%s_language=en&%s_nodupes=1&adminpw=%s';
         $path = sprintf($path, $this->list, $email, $email, $email, $email, $this->adminpw);
         $url = $this->adminurl . $path;
-        $html = $this->_fetch($url);
+        $html = $this->fetch($url);
         if (!$html) {
             return false;
         }
@@ -283,7 +283,7 @@ class Mailman
     {
         //get the letters
         $url = $this->adminurl . sprintf('/%s/members?adminpw=%s', $this->list, $this->adminpw);
-        $html = $this->_fetch($url);
+        $html = $this->fetch($url);
         if (!$html) {
             return false;
         }
@@ -297,7 +297,7 @@ class Mailman
         $members = array(array(), array());
         foreach ($letters as $letter) {
             $url = $this->adminurl . sprintf('/%s/members?letter=%s&adminpw=%s', $this->list, $letter, $this->adminpw);
-            $html = $this->_fetch($url);
+            $html = $this->fetch($url);
             //parse html
             $p = '#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
             preg_match_all($p, $html, $m);
@@ -315,7 +315,7 @@ class Mailman
     public function version()
     {
         $url = $this->adminurl . sprintf('/%s/?adminpw=%s', $this->list, $this->adminpw);
-        $html = $this->_fetch($url);
+        $html = $this->fetch($url);
         if (!$html) {
             return false;
         }
