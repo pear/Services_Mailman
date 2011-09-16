@@ -88,7 +88,7 @@ class Mailman
      * @param string $adminpw  Set admin password of the list
      * @param object $req      Provide your own {@link HTTP_Request2} instance
      *
-     * @return mixed
+     * @return PHP_Mailman
      */
     public function __construct($adminurl, $list = '', $adminpw = '', HTTP_Request2 $req = null)
     {
