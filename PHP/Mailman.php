@@ -281,7 +281,7 @@ class Mailman
      *
      * @param string $email A valid email address of a member to lookup
      *
-     * @return unknown Return description
+     * @return string Returns unparsed HTML
      */
     public function member($email)
     {
