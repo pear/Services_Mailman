@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHP Mailman
  *
@@ -39,33 +40,55 @@
  * @link      http://php-mailman.sf.net/
  */
 
-chdir(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR);
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'PHP_Mailman_AllTests::main');
+}
 
-require_once dirname(__FILE__) . '/PHP/MailmanTest.php';
-require_once 'PHPUnit/Framework/TestSuite.php';
+require_once 'PHPUnit/Framework.php';
+require_once 'PHPUnit/Extensions/PhptTestSuite.php';
+require_once 'PHPUnit/TextUI/TestRunner.php';
 
 /**
- * The all tests suite file
+ * Mailman phpt test suite.
  *
- * @category PHP                                                        
- * @package  Mailman
- * @author   James Wade <hm2k@php.net>
- * @license  http://www.opensource.org/licenses/bsd-license.php The BSD License
- * @link     http://php-mailman.sf.net/
- */             
+ * Run all tests from the package root directory:
+ * $ phpunit PHP_Mailman_AllTests tests/AllTests.php
+ * or
+ * $ php tests/AllTests.php
+ *
+ * @category  PHP
+ * @package   PHP_Mailman
+ * @author    James Wade <hm2k@php.net>
+ * @copyright 2011 James Wade
+ * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
+ * @version   Release: @package_version@
+ * @link      http://php-mailman.sf.net/
+ */
 class PHP_Mailman_AllTests
 {
     /**
-     * Create the suite
+     * Runs the test suite
      *
-     * @return object Instance of {@link PHPUnit_Framework_TestSuite}
+     * @return void
+     * @static
+     */
+    public static function main()
+    {
+        PHPUnit_TextUI_TestRunner::run(self::suite());
+    }
+
+    /**
+     * Return the phpt test suite
+     *
+     * @return object the PHPUnit_Framework_TestSuite object
+     * @static
      */
     public static function suite()
     {
-        $suite = new PHPUnit_Framework_TestSuite();
-        $suite->addTestSuite('PHP_Mailman');
-        return $suite;
+        return new PHPUnit_Extensions_PhptTestSuite(dirname(__FILE__));
     }
 }
 
-?>
+if (PHPUnit_MAIN_METHOD == 'PHP_Mailman_AllTests::main') {
+    PHP_Mailman_AllTests::main();
+}
