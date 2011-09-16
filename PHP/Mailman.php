@@ -160,11 +160,11 @@ class Mailman
     /**
      * Sets the req class variable
      *
-     * @param object $object The HTTP_Request2 object
+     * @param object $object A HTTP_Request2 object
      *
      * @return boolean Returns whether it was set or not
      */
-    protected function setReq($object)
+    protected function setReq(HTTP_Request2 $object)
     {
         if (!is_object($object)) {
             $this->setError(
