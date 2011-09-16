@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHP Mailman
  *
@@ -129,7 +130,7 @@ class Mailman
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
-            return;
+            return false;
         }
         $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$string) {
@@ -152,7 +153,7 @@ class Mailman
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
-            return;
+            return false;
         }
         return $this->adminpw = $string;
     }
@@ -170,6 +171,7 @@ class Mailman
                 __METHOD__ . ' expects parameter 1 to be object, ' .
                 gettype($object) . ' given'
             );
+            return false;
         }
 
         if ($object instanceof HTTP_Request2) {
@@ -200,7 +202,7 @@ class Mailman
      *
      * @return string Returns error message
      */
-    protected function getError()
+    public function getError()
     {
         return $this->error ? $this->error : '';
     }
@@ -209,7 +211,7 @@ class Mailman
      *
      * @return boolean Returns whether theres a value or not
      */
-    protected function hasError()
+    public function hasError()
     {
         return $this->error ? 1 : 0;
     }
