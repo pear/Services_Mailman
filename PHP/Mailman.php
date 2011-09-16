@@ -36,7 +36,7 @@
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   SVN: @package_version@
- * @link      http://pear.php.net/package/Mailman
+ * @link      http://php-mailman.sf.net/
  */
 
 require_once 'HTTP/Request2.php';
@@ -50,7 +50,7 @@ require_once 'HTTP/Request2.php';
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   Release: $Id:$
- * @link      http://pear.php.net/package/Mailman
+ * @link      http://php-mailman.sf.net/
  */
 class Mailman
 {
@@ -364,7 +364,8 @@ class Mailman
         }
     }
     /**
-     * Set digest. Note that the $email needs to be subsribed first (e.g. by using the {@link subsribe()} method)
+     * Set digest. Note that the $email needs to be subsribed first
+     *  (e.g. by using the {@link subscribe()} method)
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?user=<email-address>
      *      &<email-address>_digest=1&setmemberopts_btn=Submit%20Your%20Changes
