@@ -180,7 +180,7 @@ class Mailman
         if (is_object($this->req)) {
             return true;
         } else {
-            $this->setError("Unable to create instance of HTTP_Request2");
+            $this->setError('Unable to create instance of HTTP_Request2');
             return false;
         }
     }
@@ -285,9 +285,12 @@ class Mailman
      */
     public function member($email)
     {
-        $path = '/%s/members?findmember=%s&setmemberopts_btn&adminpw=%s';
-        $path = sprintf($path, $this->list, $email, $this->adminpw);
-        $url = $this->adminurl . $path;
+        $path = '/' . $this->list . '/members';
+        $query = array('findmember'=>$email, 
+                        'setmemberopts_btn'=>NULL,
+                        'adminpw'=>$this->adminpw);
+        $query = http_build_query($query, '', '&');
+        $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -307,9 +310,13 @@ class Mailman
      */
     public function unsubscribe($email)
     {
-        $path = '/%s/members/remove?send_unsub_ack_to_this_batch=0&send_unsub_notifications_to_list_owner=0&unsubscribees_upload=%s&adminpw=%s';
-        $path = sprintf($path, $this->list, $email, $this->adminpw);
-        $url = $this->adminurl . $path;
+        $path = '/' . $this->list . '/members/remove';
+        $query = array('send_unsub_ack_to_this_batch'=>0,
+                        'send_unsub_notifications_to_list_owner'=>0,
+                        'unsubscribees_upload'=>$email,
+                        'adminpw'=>$this->adminpw);
+        $query = http_build_query($query, '', '&');
+        $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -336,9 +343,14 @@ class Mailman
      */
     public function subscribe($email, $invite = false)
     {
-        $path = '/%s/members/add?subscribe_or_invite=%d&send_welcome_msg_to_this_batch=0&notification_to_list_owner=0&subscribees_upload=%s&adminpw=%s';
-        $path = sprintf($path, $this->list, (int)$invite, $email, $this->adminpw);
-        $url = $this->adminurl . $path;
+        $path = '/' . $this->list . '/members/add';
+        $query = array('subscribe_or_invite' => (int)$invite,
+                        'send_welcome_msg_to_this_batch'=>0,
+                        'notification_to_list_owner'=>0,
+                        'subscribees_upload'=>$email
+                        'adminpw'=>$this->adminpw);
+        $query = http_build_query($query, '', '&');
+        $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -363,12 +375,19 @@ class Mailman
      *
      * @return unknown Return description
      */
-    public function setdigest($email)
+    public function setDigest($email)
     {
-        $path = '/%s/members?user=
-		%s&%s_digest=1&setmemberopts_btn=Submit%20Your%20Changes&allmodbit_val=0&%s_language=en&%s_nodupes=1&adminpw=%s';
-        $path = sprintf($path, $this->list, $email, $email, $email, $email, $this->adminpw);
-        $url = $this->adminurl . $path;
+        $path = '/' . $this->list . '/members';
+        $path = '/%s/members?&allmodbit_val=0&%s_language=en&%s_nodupes=1&adminpw=%s';
+        $query = array('user' => $email,
+                        $email . '_digest' => 1,
+                        'setmemberopts_btn' => 'Submit%20Your%20Changes',
+                        'allmodbit_val' => 0,
+                        $email . '_language' => 'en',
+                        $email . '_nodupes' => 1,
+                        'adminpw' => $this->adminpw);
+        $query = http_build_query($query, '', '&');
+        $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -384,7 +403,10 @@ class Mailman
     public function members()
     {
         //get the letters
-        $url = $this->adminurl . sprintf('/%s/members?adminpw=%s', $this->list, $this->adminpw);
+        $path = '/' . $this->list . '/members';
+        $query = array('adminpw' => $this->adminpw);
+        $query = http_build_query($query, '', '&');
+        $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -398,7 +420,10 @@ class Mailman
         //do the loop
         $members = array(array(), array());
         foreach ($letters as $letter) {
-            $url = $this->adminurl . sprintf('/%s/members?letter=%s&adminpw=%s', $this->list, $letter, $this->adminpw);
+            $query = array('letter' => $letter,
+                           'adminpw' => $this->adminpw);
+            $query = http_build_query($query, '', '&');
+            $url = $this->adminurl . $path . '?' . $query;
             $html = $this->fetch($url);
             //parse html
             $p = '#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
@@ -416,7 +441,10 @@ class Mailman
      */
     public function version()
     {
-        $url = $this->adminurl . sprintf('/%s/?adminpw=%s', $this->list, $this->adminpw);
+        $path = '/' . $this->list . '/';
+        $query = array('adminpw' => $this->adminpw);
+        $query = http_build_query($query, '', '&');
+        $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
