@@ -219,7 +219,7 @@ class Mailman
      */
     public function hasError()
     {
-        return $this->error ? 1 : 0;
+        return !empty($this->error);
     }
     /**
      * Fetches the HTML to be parsed
