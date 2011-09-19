@@ -125,6 +125,12 @@ class Mailman
      */
     protected function setAdminURL($string)
     {
+        if (!empty($string)) {
+            $this->setError(
+                __METHOD__ . ' does not expect parameter 1 to be empty'
+            );
+            return false;
+        }
         if (!is_string($string)) {
             $this->setError(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
