@@ -294,9 +294,9 @@ class Mailman
     public function member($email)
     {
         $path = '/' . $this->list . '/members';
-        $query = array('findmember'=>$email, 
-                        'setmemberopts_btn'=>NULL,
-                        'adminpw'=>$this->adminpw);
+        $query = array('findmember' => $email, 
+                        'setmemberopts_btn' => null,
+                        'adminpw' => $this->adminpw);
         $query = http_build_query($query, '', '&');
         $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
