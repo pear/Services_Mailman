@@ -33,9 +33,8 @@
  *
  * @category  PHP
  * @package   Mailman
- * @Original_author    James Wade <hm2k@php.net>
+ * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
- * @author    William
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   SVN: @package_version@
  * @link      http://php-mailman.sf.net/
