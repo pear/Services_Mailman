@@ -125,7 +125,7 @@ class Mailman
      */
     protected function setAdminURL($string)
     {
-        if (!empty($string)) {
+        if (empty($string)) {
             $this->setError(
                 __METHOD__ . ' does not expect parameter 1 to be empty'
             );
@@ -301,7 +301,8 @@ class Mailman
         $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-            return false;
+            $this->setError('Unable to parse member');
+            return;
         }
         //TODO:parse html
         return $html;
