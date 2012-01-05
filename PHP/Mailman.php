@@ -424,19 +424,29 @@ class Mailman
         $letters = array_pop($m);
         //do the loop
         $members = array(array(), array());
-        foreach ($letters as $letter) {
-            $query = array('letter' => $letter,
-                           'adminpw' => $this->adminpw);
-            $query = http_build_query($query, '', '&');
-            $url = $this->adminurl . $path . '?' . $query;
-            $html = $this->fetch($url);
-            //parse html
-            $p = '#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
-            preg_match_all($p, $html, $m);
-            array_shift($m);
-            $members[0] = array_merge($members[0], $m[0]);
-            $members[1] = array_merge($members[1], $m[1]);
-        }
+        if(count($letters)==0) {
+			$url=$this->adminurl.sprintf('/%s/members?adminpw=%s',$this->list,$this->adminpw);
+			$html=$this->fetch($url);
+			//parse html
+			//$p='#<INPUT name="user" type="HIDDEN" value="(.+?)" >#i';
+			$p='#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
+			preg_match_all($p,$html,$m);
+			array_shift($m);
+			$members[0]=array_merge($members[0],$m[0]);
+			$members[1]=array_merge($members[1],$m[1]);
+		} else {
+			foreach($letters as $letter) {
+				$url=$this->adminurl.sprintf('/%s/members?letter=%s&adminpw=%s',$this->list,$letter,$this->adminpw);
+				$html=$this->fetch($url);
+				//parse html
+				//$p='#<INPUT name="user" type="HIDDEN" value="(.+?)" >#i';
+				$p='#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
+				preg_match_all($p,$html,$m);
+				array_shift($m);
+				$members[0]=array_merge($members[0],$m[0]);
+				$members[1]=array_merge($members[1],$m[1]);
+			}
+		}
         return $members;
     }
     /**
