@@ -1,9 +1,9 @@
-Service_MailMan
-===============
+Services_MailMan
+================
 
 	Allows the integration of Mailman into a dynamic website without using Python or requiring permission to Mailman binaries.
 
- * @category  Service
+ * @category  Services
  * @package   Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade

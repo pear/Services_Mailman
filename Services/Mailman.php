@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Service Mailman
+ * Services Mailman
  *
  * Allows the integration of Mailman into a dynamic website without using
  *      Python or requiring permission to Mailman binaries
@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @category  Service
+ * @category  Services
  * @package   Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
@@ -45,7 +45,7 @@ require_once 'HTTP/Request2.php';
 /**
  * Mailman Class
  *
- * @category  Service
+ * @category  Services
  * @package   Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
@@ -89,7 +89,7 @@ class Mailman
      * @param string $adminpw  Set admin password of the list
      * @param object $req      Provide your own {@link HTTP_Request2} instance
      *
-     * @return Service_Mailman
+     * @return Services_Mailman
      */
     public function __construct($adminurl, $list = '', $adminpw = '', HTTP_Request2 $req = null)
     {

@@ -13,7 +13,7 @@ $_mmerror='There was some kind of error, check and try again.';
 	if ($_POST) {
 		$_email=filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
         if ($_email) {
-            require 'Service/Mailman.php';
+            require 'Services/Mailman.php';
             $mm=new Mailman($_mmurl,$_mmlist,$_mmpw);
             $result=false;
             if ($_POST['sub'] == 1) {

@@ -1,12 +1,12 @@
 --TEST--
-Test for Service_Mailman lists
+Test for Services_Mailman lists
 --FILE--
 <?php
 
 // settings
 $testURL = 'http://mail.cpanel.net/mailman/admin';
 
-require_once 'Service/Mailman.php';
+require_once 'Services/Mailman.php';
 
 $mailman = new Mailman($testURL);
 $lists=$mailman->lists();
