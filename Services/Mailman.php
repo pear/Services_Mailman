@@ -56,7 +56,7 @@ require_once 'HTTP/Request2.php';
 class Mailman
 {
     /**
-     * The URL to the Mailman "Admin Links" page (no trailing slash)
+     * Default URL to the Mailman "Admin Links" page (no trailing slash)
      * @var string
      */
     protected $adminurl = 'http://www.example.co.uk/mailman/admin';
@@ -101,12 +101,18 @@ class Mailman
     /**
      * Sets the list class variable
      *
-     * @param string $string The password string
+     * @param string $string The name of the list
      *
-     * @return boolean Returns whether it was set or not
+     * @return boolean Returns true unless there was an error
      */
     protected function setList($string)
     {
+        if (empty($string)) {
+            $this->setError(
+                __METHOD__ . ' does not expect parameter 1 to be empty'
+            );
+            return false;
+        }
         if (!is_string($string)) {
             $this->setError(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
@@ -114,14 +120,15 @@ class Mailman
             );
             return false;
         }
-        return ($this->list = $string) ? true : false;
+        $this->list = $string;
+        return true;
     }
     /**
      * Sets the adminurl class variable
      *
-     * @param string $string The password string
+     * @param string $string The URL to the Mailman "Admin Links" page (no trailing slash)
      *
-     * @return boolean Returns whether it was set or not
+     * @return boolean Return true unless there was an error
      */
     protected function setAdminURL($string)
     {
@@ -143,14 +150,15 @@ class Mailman
             $this->setError('Invalid URL');
             return false;
         }
-        return ($this->adminurl = trim($string, '/')) ? true : false;
+        $this->adminurl = trim($string, '/');
+        return true;
     }
     /**
      * Sets the adminpw class variable
      *
      * @param string $string The password string
      *
-     * @return boolean Returns whether it was set or not
+     * @return boolean Returns true unless there was an error
      */
     protected function setAdminPW($string)
     {
@@ -161,7 +169,8 @@ class Mailman
             );
             return false;
         }
-        return ($this->adminpw = $string) ? true : false;
+        $this->adminpw = $string;
+        return true;
     }
     /**
      * Sets the req class variable
@@ -175,7 +184,6 @@ class Mailman
         if (!is_object($object)) {
             $this->req = new HTTP_Request2();
         }
-
         if ($object instanceof HTTP_Request2) {
             $this->req = $object;
         } else {
