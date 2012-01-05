@@ -96,7 +96,7 @@ class Mailman
         $this->setList($list);
         $this->setAdminURL($adminurl);
         $this->setAdminPW($adminpw);
-        if ($req) { $this->setReq($req); }
+        $this->setReq($req);
     }
     /**
      * Sets the list class variable
@@ -166,18 +166,14 @@ class Mailman
     /**
      * Sets the req class variable
      *
-     * @param object $object A HTTP_Request2 object
+     * @param object $object A HTTP_Request2 object (otherwise one will be created)
      *
      * @return boolean Returns whether it was set or not
      */
-    protected function setReq(HTTP_Request2 $object)
+    protected function setReq($object = false)
     {
         if (!is_object($object)) {
-            $this->setError(
-                __METHOD__ . ' expects parameter 1 to be object, ' .
-                gettype($object) . ' given'
-            );
-            return false;
+            $this->req = new HTTP_Request2();
         }
 
         if ($object instanceof HTTP_Request2) {
