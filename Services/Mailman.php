@@ -105,7 +105,7 @@ class Mailman
      *
      * @return boolean Returns true unless there was an error
      */
-    protected function setList($string)
+    public function setList($string)
     {
         if (empty($string)) {
             $this->setError(
@@ -130,7 +130,7 @@ class Mailman
      *
      * @return boolean Return true unless there was an error
      */
-    protected function setAdminURL($string)
+    public function setAdminURL($string)
     {
         if (empty($string)) {
             $this->setError(
@@ -160,7 +160,7 @@ class Mailman
      *
      * @return boolean Returns true unless there was an error
      */
-    protected function setAdminPW($string)
+    public function setAdminPW($string)
     {
         if (!is_string($string)) {
             $this->setError(
@@ -179,7 +179,7 @@ class Mailman
      *
      * @return boolean Returns whether it was set or not
      */
-    protected function setReq($object = false)
+    public function setReq($object = false)
     {
         if (!is_object($object)) {
             $this->req = new HTTP_Request2();
@@ -203,7 +203,7 @@ class Mailman
      *
      * @return boolean Returns whether it was set or not
      */
-    protected function setError($message)
+    public function setError($message)
     {
         return ($this->error = $message) ? true : false;
     }
