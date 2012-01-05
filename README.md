@@ -3,7 +3,7 @@ PHP-MailMan
 
 	Allows the integration of Mailman into a dynamic website without using Python or requiring permission to Mailman binaries.
 
- * @category  PHP
+ * @category  Service
  * @package   Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
@@ -22,4 +22,4 @@ Changelog
 ---------
 
 * 2.0
-	* Converted php-mailman to PHP_Mailman PEAR Package
+	* Converted php-mailman to Service_Mailman PEAR Package

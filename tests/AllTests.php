@@ -1,10 +1,10 @@
 <?php
 
 /**
- * PHP Mailman
+ * Service Mailman
  *
- * PHP Mailman allows the integration of Mailman into a dynamic website without
- *      using Python or requiring permission to Mailman binaries
+ * Allows the integration of Mailman into a dynamic website without using
+ *      Python or requiring permission to Mailman binaries
  *
  * PHP version 5
  *
@@ -31,7 +31,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * @category  PHP
+ * @category  Service
  * @package   Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
@@ -41,7 +41,7 @@
  */
 
 if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'PHP_Mailman_AllTests::main');
+    define('PHPUnit_MAIN_METHOD', 'Service_Mailman_AllTests::main');
 }
 
 require_once 'PHPUnit/Framework.php';
@@ -52,19 +52,19 @@ require_once 'PHPUnit/TextUI/TestRunner.php';
  * Mailman phpt test suite.
  *
  * Run all tests from the package root directory:
- * $ phpunit PHP_Mailman_AllTests tests/AllTests.php
+ * $ phpunit Service_Mailman_AllTests tests/AllTests.php
  * or
  * $ php tests/AllTests.php
  *
- * @category  PHP
- * @package   PHP_Mailman
+ * @category  Service
+ * @package   Service_Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   Release: @package_version@
  * @link      http://php-mailman.sf.net/
  */
-class PHP_Mailman_AllTests
+class Service_Mailman_AllTests
 {
     /**
      * Runs the test suite
@@ -89,6 +89,6 @@ class PHP_Mailman_AllTests
     }
 }
 
-if (PHPUnit_MAIN_METHOD == 'PHP_Mailman_AllTests::main') {
-    PHP_Mailman_AllTests::main();
+if (PHPUnit_MAIN_METHOD == 'Service_Mailman_AllTests::main') {
+    Service_Mailman_AllTests::main();
 }
