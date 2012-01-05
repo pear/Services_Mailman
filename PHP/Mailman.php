@@ -417,16 +417,18 @@ class Mailman
             return false;
         }
         $p = '#<a href=".*?letter=(.)">.+?</a>#i';
-        if (!preg_match_all($p, $html, $m)) {
-            $this->setError('Unable to match any members');
-            return false;
+        if (preg_match_all($p, $html, $m)) {
+            $letters = array_pop($m);
+        } else {
+            $letters = array(NULL);
         }
-        $letters = array_pop($m);
         //do the loop
         $members = array(array(), array());
         foreach ($letters as $letter) {
-            $query = array('letter' => $letter,
-                           'adminpw' => $this->adminpw);
+            $query = array('adminpw' => $this->adminpw);
+            if ($letter != NULL) {
+                $query['letter'] = $letter;
+            }
             $query = http_build_query($query, '', '&');
             $url = $this->adminurl . $path . '?' . $query;
             $html = $this->fetch($url);
