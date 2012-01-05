@@ -96,7 +96,7 @@ class Mailman
         $this->setList($list);
         $this->setAdminURL($adminurl);
         $this->setAdminPW($adminpw);
-        $this->setReq($req);
+        if ($req) { $this->setReq($req); }
     }
     /**
      * Sets the list class variable
@@ -112,7 +112,7 @@ class Mailman
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
-            return;
+            return false;
         }
         return $this->list = $string;
     }
@@ -302,7 +302,7 @@ class Mailman
         $html = $this->fetch($url);
         if (!$html) {
             $this->setError('Unable to parse member');
-            return;
+            return false;
         }
         //TODO:parse html
         return $html;
@@ -354,10 +354,10 @@ class Mailman
     {
         $path = '/' . $this->list . '/members/add';
         $query = array('subscribe_or_invite' => (int)$invite,
-                        'send_welcome_msg_to_this_batch'=>0,
-                        'notification_to_list_owner'=>0,
-                        'subscribees_upload'=>$email
-                        'adminpw'=>$this->adminpw);
+                        'send_welcome_msg_to_this_batch' => 0,
+                        'notification_to_list_owner' => 0,
+                        'subscribees_upload' => $email,
+                        'adminpw' => $this->adminpw);
         $query = http_build_query($query, '', '&');
         $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -388,7 +388,6 @@ class Mailman
     public function setDigest($email)
     {
         $path = '/' . $this->list . '/members';
-        $path = '/%s/members?&allmodbit_val=0&%s_language=en&%s_nodupes=1&adminpw=%s';
         $query = array('user' => $email,
                         $email . '_digest' => 1,
                         'setmemberopts_btn' => 'Submit%20Your%20Changes',
