@@ -114,7 +114,7 @@ class Mailman
             );
             return false;
         }
-        return $this->list = $string;
+        return $this->list = $string ? true : false;
     }
     /**
      * Sets the adminurl class variable
@@ -143,7 +143,7 @@ class Mailman
             $this->setError('Invalid URL');
             return false;
         }
-        return $this->adminurl = trim($string, '/');
+        return $this->adminurl = trim($string, '/') ? true : false;
     }
     /**
      * Sets the adminpw class variable
@@ -161,7 +161,7 @@ class Mailman
             );
             return false;
         }
-        return $this->adminpw = $string;
+        return $this->adminpw = $string ? true : false;
     }
     /**
      * Sets the req class variable
@@ -197,7 +197,7 @@ class Mailman
      */
     protected function setError($message)
     {
-        return $this->error = $message;
+        return $this->error = $message ? true : false;
     }
     /**
      * Get the error class variable
