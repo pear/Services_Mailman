@@ -57,24 +57,27 @@ class Mailman
 {
     /**
      * Default URL to the Mailman "Admin Links" page (no trailing slash)
+     *  For example: 'http://www.example.co.uk/mailman/admin'
      * @var string
      */
-    protected $adminurl = 'http://www.example.co.uk/mailman/admin';
+    protected $adminurl;
     /**
      * Default name of the list
+     *  For example: 'test_example.co.uk'
      * @var string
      */
-    protected $list = 'test_example.co.uk';
+    protected $list;
     /**
      * Default admin password for the list
+     *  For example: 'my-example-password'
      * @var string
      */
-    protected $adminpw = 'passwords-cannot-have-spaces';
+    protected $adminpw;
     /**
      * Holder for any error messages
      * @var string
      */
-    protected $error = '';
+    protected $error;
     /**
      * Instance of {@link HTTP_Request2}
      *
