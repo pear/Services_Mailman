@@ -428,13 +428,13 @@ class Mailman
         if (preg_match_all($p, $html, $m)) {
             $letters = array_pop($m);
         } else {
-            $letters = array(NULL);
+            $letters = array(null);
         }
         //do the loop
         $members = array(array(), array());
         foreach ($letters as $letter) {
             $query = array('adminpw' => $this->adminpw);
-            if ($letter != NULL) {
+            if ($letter != null) {
                 $query['letter'] = $letter;
             }
             $query = http_build_query($query, '', '&');
