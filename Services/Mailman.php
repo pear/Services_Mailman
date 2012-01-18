@@ -74,11 +74,6 @@ class Mailman
      */
     protected $adminpw;
     /**
-     * Holder for any error messages
-     * @var string
-     */
-    protected $error;
-    /**
      * Instance of {@link HTTP_Request2}
      *
      * @var object $req Instance of {@link HTTP_Request2}
@@ -111,13 +106,13 @@ class Mailman
     public function setList($string)
     {
         if (empty($string)) {
-            $this->setError(
+            throw new Exception(
                 __METHOD__ . ' does not expect parameter 1 to be empty'
             );
             return false;
         }
         if (!is_string($string)) {
-            $this->setError(
+            throw new Exception(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
@@ -136,13 +131,13 @@ class Mailman
     public function setAdminURL($string)
     {
         if (empty($string)) {
-            $this->setError(
+            throw new Exception(
                 __METHOD__ . ' does not expect parameter 1 to be empty'
             );
             return false;
         }
         if (!is_string($string)) {
-            $this->setError(
+            throw new Exception(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
@@ -150,7 +145,7 @@ class Mailman
         }
         $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$string) {
-            $this->setError('Invalid URL');
+            throw new Exception('Invalid URL');
             return false;
         }
         $this->adminurl = trim($string, '/');
@@ -166,7 +161,7 @@ class Mailman
     public function setAdminPW($string)
     {
         if (!is_string($string)) {
-            $this->setError(
+            throw new Exception(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
@@ -195,38 +190,9 @@ class Mailman
         if (is_object($this->req)) {
             return true;
         } else {
-            $this->setError('Unable to create instance of HTTP_Request2');
+            throw new Exception('Unable to create instance of HTTP_Request2');
             return false;
         }
-    }
-    /**
-     * Sets the error class variable
-     *
-     * @param string $message The error message
-     *
-     * @return boolean Returns whether it was set or not
-     */
-    public function setError($message)
-    {
-        return ($this->error = $message) ? true : false;
-    }
-    /**
-     * Get the error class variable
-     *
-     * @return string Returns error message
-     */
-    public function getError()
-    {
-        return $this->error;
-    }
-    /**
-     * Has the error class variable got a value?
-     *
-     * @return boolean Returns whether theres a value or not
-     */
-    public function hasError()
-    {
-        return !empty($this->error);
     }
     /**
      * Fetches the HTML to be parsed
@@ -239,7 +205,7 @@ class Mailman
     {
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
-            $this->setError('Invalid URL');
+            throw new Exception('Invalid URL');
             return false;
         }
         $this->req->setUrl($url);
@@ -248,7 +214,7 @@ class Mailman
         if ($html && preg_match('#<HTML>#i', $html)) {
             return $html;
         } else {
-            $this->setError('Unable to fetch HTML');
+            throw new Exception('Unable to fetch HTML');
             return false;
         }
     }
@@ -272,7 +238,7 @@ class Mailman
         $a = array();
         if (preg_match_all($match, $html, $m)) {
             if (!$m) {
-                $this->setError('Unable to match any lists');
+                throw new Exception('Unable to match any lists');
                 return false;
             }
             foreach ($m[0] as $k => $v) {
@@ -308,7 +274,7 @@ class Mailman
         $url = $this->adminurl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-            $this->setError('Unable to parse member');
+            throw new Exception('Unable to parse member');
             return false;
         }
         //TODO:parse html
@@ -338,10 +304,9 @@ class Mailman
             return false;
         }
         if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
-            $this->setError('');
             return true;
         } elseif (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
-            $this->setError(trim(strip_tags($m[1]), ':'));
+            throw new Exception(trim(strip_tags($m[1]), ':'));
             return false;
         }
     }
@@ -372,10 +337,9 @@ class Mailman
             return false;
         }
         if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
-            $this->setError('');
             return true;
         } elseif (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
-            $this->setError(trim(strip_tags($m[1]), ':'));
+            throw new Exception(trim(strip_tags($m[1]), ':'));
             return false;
         }
     }
