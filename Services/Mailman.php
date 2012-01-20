@@ -282,10 +282,10 @@ class Mailman
     public function unsubscribe($email)
     {
         $path = '/' . $this->list . '/members/remove';
-        $query = array('send_unsub_ack_to_this_batch'=>0,
-                        'send_unsub_notifications_to_list_owner'=>0,
-                        'unsubscribees_upload'=>$email,
-                        'adminPW'=>$this->adminPW);
+        $query = array('send_unsub_ack_to_this_batch' => 0,
+                        'send_unsub_notifications_to_list_owner' => 0,
+                        'unsubscribees_upload' => $email,
+                        'adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
