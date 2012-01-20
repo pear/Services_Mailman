@@ -80,12 +80,12 @@ class Mailman
      */
     protected $request = null;
     /**
-     * The class constructor
+     * Constructor
      *
      * @param string $adminURL Set the URL to the Mailman "Admin Links" page
      * @param string $list     Set the name of the list
      * @param string $adminPW  Set admin password of the list
-     * @param object $request      Provide your own {@link HTTP_Request2} instance
+     * @param object $request      Provide your {@link HTTP_Request2} instance
      *
      * @return Services_Mailman
      */
@@ -97,7 +97,7 @@ class Mailman
         $this->setRequest($request);
     }
     /**
-     * Sets the list class variable
+     * Sets the list name
      *
      * @param string $string The name of the list
      *
@@ -120,7 +120,7 @@ class Mailman
         return true;
     }
     /**
-     * Sets the adminURL class variable
+     * Sets the URL to the Mailman "Admin Links" page
      *
      * @param string $string The URL to the Mailman "Admin Links" page (no trailing slash)
      *
@@ -147,7 +147,7 @@ class Mailman
         return true;
     }
     /**
-     * Sets the adminPW class variable
+     * Sets the admin password of the list
      *
      * @param string $string The password string
      *
@@ -165,7 +165,7 @@ class Mailman
         return true;
     }
     /**
-     * Sets the request class variable
+     * Sets the request object
      *
      * @param object $object A HTTP_Request2 object (otherwise one will be created)
      *
@@ -216,7 +216,7 @@ class Mailman
      *
      * @param boolean $assoc Associated array (default) or not
      *
-     * @return array   Return the list of lists
+     * @return array   Return an array of lists
      */
     public function lists($assoc = true)
     {
@@ -369,7 +369,6 @@ class Mailman
      */
     public function members()
     {
-        //get the letters
         $path = '/' . $this->list . '/members';
         $query = array('adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
@@ -384,7 +383,6 @@ class Mailman
         } else {
             $letters = array(null);
         }
-        //do the loop
         $members = array(array(), array());
         foreach ($letters as $letter) {
             $query = array('adminPW' => $this->adminPW);
@@ -394,7 +392,6 @@ class Mailman
             $query = http_build_query($query, '', '&');
             $url = $this->adminURL . $path . '?' . $query;
             $html = $this->fetch($url);
-            //parse html
             $p = '#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
             preg_match_all($p, $html, $m);
             array_shift($m);
