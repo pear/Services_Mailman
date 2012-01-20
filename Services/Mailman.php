@@ -60,7 +60,7 @@ class Mailman
      *  For example: 'http://www.example.co.uk/mailman/admin'
      * @var string
      */
-    protected $adminurl;
+    protected $adminURL;
     /**
      * Default name of the list
      *  For example: 'test_example.co.uk'
@@ -72,29 +72,29 @@ class Mailman
      *  For example: 'my-example-password'
      * @var string
      */
-    protected $adminpw;
+    protected $adminPW;
     /**
      * Instance of {@link HTTP_Request2}
      *
-     * @var object $req Instance of {@link HTTP_Request2}
+     * @var object $request Instance of {@link HTTP_Request2}
      */
-    protected $req = null;
+    protected $request = null;
     /**
      * The class constructor
      *
-     * @param string $adminurl Set the URL to the Mailman "Admin Links" page
+     * @param string $adminURL Set the URL to the Mailman "Admin Links" page
      * @param string $list     Set the name of the list
-     * @param string $adminpw  Set admin password of the list
-     * @param object $req      Provide your own {@link HTTP_Request2} instance
+     * @param string $adminPW  Set admin password of the list
+     * @param object $request      Provide your own {@link HTTP_Request2} instance
      *
      * @return Services_Mailman
      */
-    public function __construct($adminurl, $list = '', $adminpw = '', HTTP_Request2 $req = null)
+    public function __construct($adminURL, $list = '', $adminPW = '', HTTP_Request2 $request = null)
     {
         $this->setList($list);
-        $this->setAdminURL($adminurl);
-        $this->setAdminPW($adminpw);
-        $this->setReq($req);
+        $this->setadminURL($adminURL);
+        $this->setadminPW($adminPW);
+        $this->setRequest($request);
     }
     /**
      * Sets the list class variable
@@ -122,13 +122,13 @@ class Mailman
         return true;
     }
     /**
-     * Sets the adminurl class variable
+     * Sets the adminURL class variable
      *
      * @param string $string The URL to the Mailman "Admin Links" page (no trailing slash)
      *
      * @return boolean Return true unless there was an error
      */
-    public function setAdminURL($string)
+    public function setadminURL($string)
     {
         if (empty($string)) {
             throw new Exception(
@@ -148,17 +148,17 @@ class Mailman
             throw new Exception('Invalid URL');
             return false;
         }
-        $this->adminurl = trim($string, '/');
+        $this->adminURL = trim($string, '/');
         return true;
     }
     /**
-     * Sets the adminpw class variable
+     * Sets the adminPW class variable
      *
      * @param string $string The password string
      *
      * @return boolean Returns true unless there was an error
      */
-    public function setAdminPW($string)
+    public function setadminPW($string)
     {
         if (!is_string($string)) {
             throw new Exception(
@@ -167,27 +167,27 @@ class Mailman
             );
             return false;
         }
-        $this->adminpw = $string;
+        $this->adminPW = $string;
         return true;
     }
     /**
-     * Sets the req class variable
+     * Sets the request class variable
      *
      * @param object $object A HTTP_Request2 object (otherwise one will be created)
      *
      * @return boolean Returns whether it was set or not
      */
-    public function setReq($object = false)
+    public function setRequest($object = false)
     {
         if (!is_object($object)) {
-            $this->req = new HTTP_Request2();
+            $this->requestuest = new HTTP_Request2();
         }
         if ($object instanceof HTTP_Request2) {
-            $this->req = $object;
+            $this->requestuest = $object;
         } else {
-            $this->req = new HTTP_Request2();
+            $this->requestuest = new HTTP_Request2();
         }
-        if (is_object($this->req)) {
+        if (is_object($this->requestuest)) {
             return true;
         } else {
             throw new Exception('Unable to create instance of HTTP_Request2');
@@ -208,9 +208,9 @@ class Mailman
             throw new Exception('Invalid URL');
             return false;
         }
-        $this->req->setUrl($url);
-        $this->req->setMethod('GET');
-        $html = $this->req->send()->getBody();
+        $this->request->setUrl($url);
+        $this->request->setMethod('GET');
+        $html = $this->request->send()->getBody();
         if ($html && preg_match('#<HTML>#i', $html)) {
             return $html;
         } else {
@@ -229,7 +229,7 @@ class Mailman
      */
     public function lists($assoc = true)
     {
-        $html = $this->fetch($this->adminurl);
+        $html = $this->fetch($this->adminURL);
         if (!$html) {
             return false;
         }
@@ -258,7 +258,7 @@ class Mailman
      * List a member
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?findmember=<email-address>
-     *      &setmemberopts_btn&adminpw=<adminpassword>)
+     *      &setmemberopts_btn&adminPW=<adminpassword>)
      *
      * @param string $email A valid email address of a member to lookup
      *
@@ -269,9 +269,9 @@ class Mailman
         $path = '/' . $this->list . '/members';
         $query = array('findmember' => $email, 
                         'setmemberopts_btn' => null,
-                        'adminpw' => $this->adminpw);
+                        'adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminurl . $path . '?' . $query;
+        $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             throw new Exception('Unable to parse member');
@@ -284,7 +284,7 @@ class Mailman
      * Unsubscribe
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/remove?send_unsub_ack_to_this_batch=0
-     *      &send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminpw=<adminpassword>)
+     *      &send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminPW=<adminpassword>)
      *
      * @param string $email Valid email address of a member to unsubscribe
      *
@@ -296,9 +296,9 @@ class Mailman
         $query = array('send_unsub_ack_to_this_batch'=>0,
                         'send_unsub_notifications_to_list_owner'=>0,
                         'unsubscribees_upload'=>$email,
-                        'adminpw'=>$this->adminpw);
+                        'adminPW'=>$this->adminPW);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminurl . $path . '?' . $query;
+        $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -315,7 +315,7 @@ class Mailman
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/add?subscribe_or_invite=0
      *      &send_welcome_msg_to_this_batch=0&notification_to_list_owner=0
-     *      &subscribees_upload=<email-address>&adminpw=<adminpassword>)
+     *      &subscribees_upload=<email-address>&adminPW=<adminpassword>)
      *
      * @param string  $email  Valid email address to subscribe
      * @param boolean $invite Send an invite or not (default)
@@ -329,9 +329,9 @@ class Mailman
                         'send_welcome_msg_to_this_batch' => 0,
                         'notification_to_list_owner' => 0,
                         'subscribees_upload' => $email,
-                        'adminpw' => $this->adminpw);
+                        'adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminurl . $path . '?' . $query;
+        $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -350,7 +350,7 @@ class Mailman
      * (ie: <domain.com>/mailman/admin/<listname>/members?user=<email-address>
      *      &<email-address>_digest=1&setmemberopts_btn=Submit%20Your%20Changes
      *      &allmodbit_val=0&<email-address>_language=en&<email-address>_nodupes=1
-     *      &adminpw=<adminpassword>)
+     *      &adminPW=<adminpassword>)
      *
      * @param string $email Valid email address of a member
      *
@@ -365,9 +365,9 @@ class Mailman
                         'allmodbit_val' => 0,
                         $email . '_language' => 'en',
                         $email . '_nodupes' => 1,
-                        'adminpw' => $this->adminpw);
+                        'adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminurl . $path . '?' . $query;
+        $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -384,9 +384,9 @@ class Mailman
     {
         //get the letters
         $path = '/' . $this->list . '/members';
-        $query = array('adminpw' => $this->adminpw);
+        $query = array('adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminurl . $path . '?' . $query;
+        $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
@@ -400,12 +400,12 @@ class Mailman
         //do the loop
         $members = array(array(), array());
         foreach ($letters as $letter) {
-            $query = array('adminpw' => $this->adminpw);
+            $query = array('adminPW' => $this->adminPW);
             if ($letter != null) {
                 $query['letter'] = $letter;
             }
             $query = http_build_query($query, '', '&');
-            $url = $this->adminurl . $path . '?' . $query;
+            $url = $this->adminURL . $path . '?' . $query;
             $html = $this->fetch($url);
             //parse html
             $p = '#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
@@ -424,9 +424,9 @@ class Mailman
     public function version()
     {
         $path = '/' . $this->list . '/';
-        $query = array('adminpw' => $this->adminpw);
+        $query = array('adminPW' => $this->adminPW);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminurl . $path . '?' . $query;
+        $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             return false;
