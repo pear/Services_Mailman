@@ -74,9 +74,9 @@ class Mailman
      */
     protected $adminPW;
     /**
-     * Instance of {@link HTTP_Request2}
+     * A HTTP request instance
      *
-     * @var object $request Instance of {@link HTTP_Request2}
+     * @var HTTP_Request2 $request
      */
     protected $request = null;
     /**
@@ -85,7 +85,7 @@ class Mailman
      * @param string $adminURL Set the URL to the Mailman "Admin Links" page
      * @param string $list     Set the name of the list
      * @param string $adminPW  Set admin password of the list
-     * @param object $request      Provide your {@link HTTP_Request2} instance
+     * @param HTTP_Request2 $request  Provide your HTTP request instance
      *
      * @return Services_Mailman
      */
@@ -167,7 +167,7 @@ class Mailman
     /**
      * Sets the request object
      *
-     * @param object $object A HTTP_Request2 object (otherwise one will be created)
+     * @param HTTP_Request2 $object A HTTP request instance (otherwise one will be created)
      *
      * @return boolean Returns whether it was set or not
      */
