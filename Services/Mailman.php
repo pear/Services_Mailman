@@ -74,18 +74,18 @@ class Mailman
      */
     protected $adminpw;
     /**
-     * Instance of {@link HTTP_Request2}
+     * HTTP request object
      *
-     * @var object $req Instance of {@link HTTP_Request2}
+     * @var HTTP_Request2
      */
     protected $req = null;
     /**
-     * The class constructor
+     * Constructor
      *
-     * @param string $adminurl Set the URL to the Mailman "Admin Links" page
+     * @param string $adminurl URL to the Mailman "Admin Links" page
      * @param string $list     Set the name of the list
      * @param string $adminpw  Set admin password of the list
-     * @param object $req      Provide your own {@link HTTP_Request2} instance
+     * @param HTTP_Request2 $req  Provide your request object
      *
      * @return Services_Mailman
      */
@@ -97,7 +97,7 @@ class Mailman
         $this->setReq($req);
     }
     /**
-     * Sets the list class variable
+     * Sets the list name
      *
      * @param string $string The name of the list
      *
@@ -122,7 +122,7 @@ class Mailman
         return true;
     }
     /**
-     * Sets the adminurl class variable
+     * Sets the URL to the administrative interface
      *
      * @param string $string The URL to the Mailman "Admin Links" page (no trailing slash)
      *
@@ -152,7 +152,7 @@ class Mailman
         return true;
     }
     /**
-     * Sets the adminpw class variable
+     * Sets the administrative password
      *
      * @param string $string The password string
      *
@@ -171,9 +171,9 @@ class Mailman
         return true;
     }
     /**
-     * Sets the req class variable
+     * Sets the request object
      *
-     * @param object $object A HTTP_Request2 object (otherwise one will be created)
+     * @param HTTP_Request2 $object A request object (otherwise one will be created)
      *
      * @return boolean Returns whether it was set or not
      */
@@ -219,11 +219,11 @@ class Mailman
         }
     }
     /**
-     * List lists
+     * Returns array of mailing lists
      *
      * (ie: <domain.com>/mailman/admin)
      *
-     * @param boolean $assoc Associated array (default) or not
+     * @param boolean $assoc Associative array (default) or not
      *
      * @return array   Return the list of lists
      */
@@ -255,7 +255,7 @@ class Mailman
         return $a;
     }
     /**
-     * List a member
+     * Returns metadata about a mailing list member by email address
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?findmember=<email-address>
      *      &setmemberopts_btn&adminpw=<adminpassword>)
@@ -281,7 +281,7 @@ class Mailman
         return $html;
     }
     /**
-     * Unsubscribe
+     * Unsubscribes given member by email address
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/remove?send_unsub_ack_to_this_batch=0
      *      &send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminpw=<adminpassword>)
@@ -311,7 +311,8 @@ class Mailman
         }
     }
     /**
-     * Subscribe
+     * Adds given email address to this mailing list. Optionally,
+     * do it as an invitation.
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/add?subscribe_or_invite=0
      *      &send_welcome_msg_to_this_batch=0&notification_to_list_owner=0
@@ -344,7 +345,8 @@ class Mailman
         }
     }
     /**
-     * Set digest. Note that the $email needs to be subsribed first
+     * Sets digest mode for given email address. Note that the $email 
+     * needs to be a subscriber.
      *  (e.g. by using the {@link subscribe()} method)
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?user=<email-address>
@@ -376,9 +378,9 @@ class Mailman
         return $html;
     }
     /**
-     * List members
+     * Returns a list of members' names and email addresses
      *
-     * @return array  Returns a lits of members names and email addresses
+     * @return array Pairs of names and email addresses 
      */
     public function members()
     {
@@ -397,7 +399,7 @@ class Mailman
         } else {
             $letters = array(null);
         }
-        //do the loop
+        
         $members = array(array(), array());
         foreach ($letters as $letter) {
             $query = array('adminpw' => $this->adminpw);
@@ -417,9 +419,9 @@ class Mailman
         return $members;
     }
     /**
-     * Version
+     * Returns Mailman version number 
      *
-     * @return string Returns the version of Mailman
+     * @return string
      */
     public function version()
     {
