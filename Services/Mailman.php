@@ -109,14 +109,12 @@ class Mailman
             throw new Exception(
                 __METHOD__ . ' does not expect parameter 1 to be empty'
             );
-            return false;
         }
         if (!is_string($string)) {
             throw new Exception(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
-            return false;
         }
         $this->list = $string;
         return true;
@@ -134,19 +132,16 @@ class Mailman
             throw new Exception(
                 __METHOD__ . ' does not expect parameter 1 to be empty'
             );
-            return false;
         }
         if (!is_string($string)) {
             throw new Exception(
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
-            return false;
         }
         $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$string) {
             throw new Exception('Invalid URL');
-            return false;
         }
         $this->adminURL = trim($string, '/');
         return true;
@@ -165,7 +160,6 @@ class Mailman
                 __METHOD__ . ' expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
-            return false;
         }
         $this->adminPW = $string;
         return true;
@@ -191,7 +185,6 @@ class Mailman
             return true;
         } else {
             throw new Exception('Unable to create instance of HTTP_Request2');
-            return false;
         }
     }
     /**
@@ -206,7 +199,6 @@ class Mailman
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
             throw new Exception('Invalid URL');
-            return false;
         }
         $this->request->setUrl($url);
         $this->request->setMethod('GET');
@@ -215,7 +207,6 @@ class Mailman
             return $html;
         } else {
             throw new Exception('Unable to fetch HTML');
-            return false;
         }
     }
     /**
@@ -239,7 +230,6 @@ class Mailman
         if (preg_match_all($match, $html, $m)) {
             if (!$m) {
                 throw new Exception('Unable to match any lists');
-                return false;
             }
             foreach ($m[0] as $k => $v) {
                 $a[$k][] = $m[1][$k];
@@ -275,7 +265,6 @@ class Mailman
         $html = $this->fetch($url);
         if (!$html) {
             throw new Exception('Unable to parse member');
-            return false;
         }
         //TODO:parse html
         return $html;
@@ -307,7 +296,6 @@ class Mailman
             return true;
         } elseif (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
             throw new Exception(trim(strip_tags($m[1]), ':'));
-            return false;
         }
     }
     /**
@@ -340,7 +328,6 @@ class Mailman
             return true;
         } elseif (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
             throw new Exception(trim(strip_tags($m[1]), ':'));
-            return false;
         }
     }
     /**
