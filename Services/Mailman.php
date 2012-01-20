@@ -107,12 +107,12 @@ class Mailman
     {
         if (empty($string)) {
             throw new Exception(
-                __METHOD__ . ' does not expect parameter 1 to be empty'
+                'setList() does not expect parameter 1 to be empty'
             );
         }
         if (!is_string($string)) {
             throw new Exception(
-                __METHOD__ . ' expects parameter 1 to be string, ' .
+                'setList() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
         }
@@ -130,12 +130,12 @@ class Mailman
     {
         if (empty($string)) {
             throw new Exception(
-                __METHOD__ . ' does not expect parameter 1 to be empty'
+                'setadminURL() does not expect parameter 1 to be empty'
             );
         }
         if (!is_string($string)) {
             throw new Exception(
-                __METHOD__ . ' expects parameter 1 to be string, ' .
+                'setadminURL() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
         }
@@ -157,7 +157,7 @@ class Mailman
     {
         if (!is_string($string)) {
             throw new Exception(
-                __METHOD__ . ' expects parameter 1 to be string, ' .
+                'setadminPW() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
         }
