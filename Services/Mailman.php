@@ -248,7 +248,7 @@ class Mailman
      * List a member
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?findmember=<email-address>
-     *      &setmemberopts_btn&adminPW=<adminpassword>)
+     *      &setmemberopts_btn&adminpw=<adminpassword>)
      *
      * @param string $email A valid email address of a member to lookup
      *
@@ -259,7 +259,7 @@ class Mailman
         $path = '/' . $this->list . '/members';
         $query = array('findmember' => $email, 
                         'setmemberopts_btn' => null,
-                        'adminPW' => $this->adminPW);
+                        'adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -273,7 +273,7 @@ class Mailman
      * Unsubscribe
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/remove?send_unsub_ack_to_this_batch=0
-     *      &send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminPW=<adminpassword>)
+     *      &send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminpw=<adminpassword>)
      *
      * @param string $email Valid email address of a member to unsubscribe
      *
@@ -285,7 +285,7 @@ class Mailman
         $query = array('send_unsub_ack_to_this_batch' => 0,
                         'send_unsub_notifications_to_list_owner' => 0,
                         'unsubscribees_upload' => $email,
-                        'adminPW' => $this->adminPW);
+                        'adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -303,7 +303,7 @@ class Mailman
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/add?subscribe_or_invite=0
      *      &send_welcome_msg_to_this_batch=0&notification_to_list_owner=0
-     *      &subscribees_upload=<email-address>&adminPW=<adminpassword>)
+     *      &subscribees_upload=<email-address>&adminpw=<adminpassword>)
      *
      * @param string  $email  Valid email address to subscribe
      * @param boolean $invite Send an invite or not (default)
@@ -317,7 +317,7 @@ class Mailman
                         'send_welcome_msg_to_this_batch' => 0,
                         'notification_to_list_owner' => 0,
                         'subscribees_upload' => $email,
-                        'adminPW' => $this->adminPW);
+                        'adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -337,7 +337,7 @@ class Mailman
      * (ie: <domain.com>/mailman/admin/<listname>/members?user=<email-address>
      *      &<email-address>_digest=1&setmemberopts_btn=Submit%20Your%20Changes
      *      &allmodbit_val=0&<email-address>_language=en&<email-address>_nodupes=1
-     *      &adminPW=<adminpassword>)
+     *      &adminpw=<adminpassword>)
      *
      * @param string $email Valid email address of a member
      *
@@ -352,7 +352,7 @@ class Mailman
                         'allmodbit_val' => 0,
                         $email . '_language' => 'en',
                         $email . '_nodupes' => 1,
-                        'adminPW' => $this->adminPW);
+                        'adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -370,7 +370,7 @@ class Mailman
     public function members()
     {
         $path = '/' . $this->list . '/members';
-        $query = array('adminPW' => $this->adminPW);
+        $query = array('adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -385,7 +385,7 @@ class Mailman
         }
         $members = array(array(), array());
         foreach ($letters as $letter) {
-            $query = array('adminPW' => $this->adminPW);
+            $query = array('adminpw' => $this->adminPW);
             if ($letter != null) {
                 $query['letter'] = $letter;
             }
@@ -408,7 +408,7 @@ class Mailman
     public function version()
     {
         $path = '/' . $this->list . '/';
-        $query = array('adminPW' => $this->adminPW);
+        $query = array('adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
