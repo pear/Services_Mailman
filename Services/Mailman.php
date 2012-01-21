@@ -301,9 +301,10 @@ class Mailman
     /**
      * Subscribe
      *
-     * (ie: <domain.com>/mailman/admin/<listname>/members/add?subscribe_or_invite=0
-     *      &send_welcome_msg_to_this_batch=0&notification_to_list_owner=0
-     *      &subscribees_upload=<email-address>&adminpw=<adminpassword>)
+     * (ie: http://example.co.uk/mailman/admin/test_example.co.uk/members/add
+     * ?subscribe_or_invite=0&send_welcome_msg_to_this_batch=1
+     * &send_notifications_to_list_owner=0&subscribees=test%40example.co.uk
+     * &invitation=&setmemberopts_btn=Submit+Your+Changes)
      *
      * @param string  $email  Valid email address to subscribe
      * @param boolean $invite Send an invite or not (default)
@@ -315,8 +316,8 @@ class Mailman
         $path = '/' . $this->list . '/members/add';
         $query = array('subscribe_or_invite' => (int)$invite,
                         'send_welcome_msg_to_this_batch' => 0,
-                        'notification_to_list_owner' => 0,
-                        'subscribees_upload' => $email,
+                        'send_notifications_to_list_owner' => 0,
+                        'subscribees' => $email,
                         'adminpw' => $this->adminPW);
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
