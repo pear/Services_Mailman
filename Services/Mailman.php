@@ -174,14 +174,14 @@ class Mailman
     public function setRequest($object = false)
     {
         if (!is_object($object)) {
-            $this->requestuest = new HTTP_Request2();
+            $this->request = new HTTP_Request2();
         }
         if ($object instanceof HTTP_Request2) {
-            $this->requestuest = $object;
+            $this->request = $object;
         } else {
-            $this->requestuest = new HTTP_Request2();
+            $this->request = new HTTP_Request2();
         }
-        if (is_object($this->requestuest)) {
+        if (is_object($this->request)) {
             return true;
         } else {
             throw new Exception('Unable to create instance of HTTP_Request2');
