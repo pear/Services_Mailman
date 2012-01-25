@@ -53,7 +53,7 @@ require_once 'HTTP/Request2.php';
  * @version   Release: $Id:$
  * @link      http://php-mailman.sf.net/
  */
-class Mailman
+class Services_Mailman
 {
     /**
      * Default URL to the Mailman "Admin Links" page (no trailing slash)
@@ -95,8 +95,8 @@ class Mailman
         $this->setadminURL($adminURL);
         $this->setadminPW($adminPW);
         $this->setRequest($request);
-        return $this;
     }
+
     /**
      * Sets the list name
      *
@@ -180,22 +180,14 @@ class Mailman
      *
      * @throws Exception If unable to create HTTP_Request2 instance.
      */
-    public function setRequest($object = false)
+    public function setRequest(HTTP_Request2 $object = null)
     {
-        if (!is_object($object)) {
+        if ($object === null) {
             $this->request = new HTTP_Request2();
         }
-        if ($object instanceof HTTP_Request2) {
-            $this->request = $object;
-        } else {
-            $this->request = new HTTP_Request2();
-        }
-        if (is_object($this->request)) {
-            return $this;
-        } else {
-            throw new Exception('Unable to create instance of HTTP_Request2');
-        }
+        return $this;
     }
+
     /**
      * Fetches the HTML to be parsed
      *
@@ -216,10 +208,10 @@ class Mailman
         $html = $this->request->send()->getBody();
         if ($html && preg_match('#<HTML>#i', $html)) {
             return $html;
-        } else {
-            throw new Exception('No HTML content.');
         }
+        throw new Exception('No HTML content.');
     }
+
     /**
      * List lists
      *
@@ -259,6 +251,7 @@ class Mailman
         }
         return $a;
     }
+
     /**
      * List a member
      *
@@ -273,19 +266,23 @@ class Mailman
      */
     public function member($email)
     {
-        $path = '/' . $this->list . '/members';
-        $query = array('findmember' => $email, 
-                        'setmemberopts_btn' => null,
-                        'adminpw' => $this->adminPW);
+        $path  = '/' . $this->list . '/members';
+        $query = array(
+            'findmember'        => $email, 
+            'setmemberopts_btn' => null,
+            'adminpw'           => $this->adminPW
+        );
+
         $query = http_build_query($query, '', '&');
-        $url = $this->adminURL . $path . '?' . $query;
-        $html = $this->fetch($url);
+        $url   = $this->adminURL . $path . '?' . $query;
+        $html  = $this->fetch($url);
         if (!$html) {
             throw new Exception('Unable to fetch HTML.');
         }
         //TODO:parse html
         return $html;
     }
+    
     /**
      * Unsubscribe
      *
@@ -301,10 +298,12 @@ class Mailman
     public function unsubscribe($email)
     {
         $path = '/' . $this->list . '/members/remove';
-        $query = array('send_unsub_ack_to_this_batch' => 0,
-                        'send_unsub_notifications_to_list_owner' => 0,
-                        'unsubscribees_upload' => $email,
-                        'adminpw' => $this->adminPW);
+        $query = array(
+            'send_unsub_ack_to_this_batch' => 0,
+            'send_unsub_notifications_to_list_owner' => 0,
+            'unsubscribees_upload' => $email,
+            'adminpw' => $this->adminPW
+        );
         $query = http_build_query($query, '', '&');
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
@@ -313,12 +312,13 @@ class Mailman
         }
         if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
             return $this;
-        } elseif (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
-            throw new Exception(trim(strip_tags($m[1]), ':'));
-        } else {
-            throw new Exception('Failed to parse HTML.');
         }
+        if (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
+            throw new Exception(trim(strip_tags($m[1]), ':'));
+        }
+        throw new Exception('Failed to parse HTML.');
     }
+
     /**
      * Subscribe
      *
@@ -350,12 +350,13 @@ class Mailman
         }
         if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
             return $this;
-        } elseif (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
-            throw new Exception(trim(strip_tags($m[1]), ':'));
-        } else {
-            throw new Exception('Failed to parse HTML.');
         }
+        if (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
+            throw new Exception(trim(strip_tags($m[1]), ':'));
+        }
+        throw new Exception('Failed to parse HTML.');
     }
+
     /**
      * Set digest. Note that the $email needs to be subsribed first
      *  (e.g. by using the {@link subscribe()} method)
@@ -453,9 +454,8 @@ class Mailman
         $p = '#<td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version (.+?)</td>#i';
         if (preg_match($p, $html, $m)) {
             return array_pop($m);
-        } else {
-            throw new Exception('Failed to parse HTML.');
         }
+        throw new Exception('Failed to parse HTML.');
     }
 } //end
 //eof
