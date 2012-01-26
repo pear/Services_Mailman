@@ -32,7 +32,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Services
- * @package   Mailman
+ * @package   Services_Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
@@ -41,12 +41,13 @@
  */
 
 require_once 'HTTP/Request2.php';
+require_once 'Services/Mailman/Exception.php';
 
 /**
  * Mailman Class
  *
  * @category  Services
- * @package   Mailman
+ * @package   Services_Mailman
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
@@ -104,17 +105,17 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws Exception When incorrect string is given.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function setList($string)
     {
         if (empty($string)) {
-            throw new Exception(
+            throw new Services_Mailman_Exception(
                 'setList() does not expect parameter 1 to be empty'
             );
         }
         if (!is_string($string)) {
-            throw new Exception(
+            throw new Services_Mailman_Exception(
                 'setList() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
@@ -129,24 +130,24 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws Exception When incorrect string is given.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function setadminURL($string)
     {
         if (empty($string)) {
-            throw new Exception(
+            throw new Services_Mailman_Exception(
                 'setadminURL() does not expect parameter 1 to be empty'
             );
         }
         if (!is_string($string)) {
-            throw new Exception(
+            throw new Services_Mailman_Exception(
                 'setadminURL() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
         }
         $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$string) {
-            throw new Exception('Invalid URL');
+            throw new Services_Mailman_Exception('Invalid URL');
         }
         $this->adminURL = trim($string, '/');
         return $this;
@@ -158,12 +159,12 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws Exception When incorrect string is given.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function setadminPW($string)
     {
         if (!is_string($string)) {
-            throw new Exception(
+            throw new Services_Mailman_Exception(
                 'setadminPW() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
@@ -178,7 +179,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws Exception If unable to create HTTP_Request2 instance.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function setRequest(HTTP_Request2 $object = null)
     {
@@ -195,13 +196,13 @@ class Services_Mailman
      *
      * @return string Return contents from URL (usually HTML)
      *
-     * @throws Exception When invalid URL is provided or no HTML content.
+     * @throws {@link Services_Mailman_Exception}
      */
     protected function fetch($url)
     {
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
-            throw new Exception('Invalid URL');
+            throw new Services_Mailman_Exception('Invalid URL');
         }
         $this->request->setUrl($url);
         $this->request->setMethod('GET');
@@ -209,7 +210,7 @@ class Services_Mailman
         if ($html && preg_match('#<HTML>#i', $html)) {
             return $html;
         }
-        throw new Exception('No HTML content.');
+        throw new Services_Mailman_Exception('No HTML content.');
     }
 
     /**
@@ -221,7 +222,7 @@ class Services_Mailman
      *
      * @return array   Return an array of lists
      *
-     * @throws Exception If it was unable to match any lists or failed to parse HTML
+     * @throws {@link Services_Mailman_Exception}
      */
     public function lists($assoc = true)
     {
@@ -234,7 +235,7 @@ class Services_Mailman
         $a = array();
         if (preg_match_all($match, $html, $m)) {
             if (!$m) {
-                throw new Exception('Unable to match any lists');
+                throw new Services_Mailman_Exception('Unable to match any lists');
             }
             foreach ($m[0] as $k => $v) {
                 $a[$k][] = $m[1][$k];
@@ -247,7 +248,7 @@ class Services_Mailman
                 }
             }
         } else {
-            throw new Exception('Failed to parse HTML.');
+            throw new Services_Mailman_Exception('Failed to parse HTML.');
         }
         return $a;
     }
@@ -262,7 +263,7 @@ class Services_Mailman
      *
      * @return string Returns unparsed HTML
      *
-     * @throws Exception When unable to fetch HTML.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function member($email)
     {
@@ -277,7 +278,7 @@ class Services_Mailman
         $url   = $this->adminURL . $path . '?' . $query;
         $html  = $this->fetch($url);
         if (!$html) {
-            throw new Exception('Unable to fetch HTML.');
+            throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         //TODO:parse html
         return $html;
@@ -293,7 +294,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws Exception When unable to fetch HTML or action was unsuccessful or unable to parse HTML.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function unsubscribe($email)
     {
@@ -308,15 +309,15 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-           throw new Exception('Unable to fetch HTML.');
+           throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
             return $this;
         }
         if (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
-            throw new Exception(trim(strip_tags($m[1]), ':'));
+            throw new Services_Mailman_Exception(trim(strip_tags($m[1]), ':'));
         }
-        throw new Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
 
     /**
@@ -332,7 +333,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws Exception When unable to fetch HTML or action was unsuccessful or unable to parse HTML.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function subscribe($email, $invite = false)
     {
@@ -346,15 +347,15 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-           throw new Exception('Unable to fetch HTML.');
+           throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
             return $this;
         }
         if (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
-            throw new Exception(trim(strip_tags($m[1]), ':'));
+            throw new Services_Mailman_Exception(trim(strip_tags($m[1]), ':'));
         }
-        throw new Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
 
     /**
@@ -370,7 +371,7 @@ class Services_Mailman
      *
      * @return string Returns unparsed HTML
      *
-     * @throws Exception When unable to fetch HTML.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function setDigest($email)
     {
@@ -386,7 +387,7 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-           throw new Exception('Unable to fetch HTML.');
+           throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         //TODO:parse html
         return $html;
@@ -396,7 +397,7 @@ class Services_Mailman
      *
      * @return array  Returns a lits of members names and email addresses
      *
-     * @throws Exception When unable to fetch HTML or unable to parse HTML.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function members()
     {
@@ -406,7 +407,7 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-            throw new Exception('Unable to fetch HTML.');
+            throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         $p = '#<a href=".*?letter=(.)">.+?</a>#i';
         if (preg_match_all($p, $html, $m)) {
@@ -429,7 +430,7 @@ class Services_Mailman
                 $members[0] = array_merge($members[0], $m[0]);
                 $members[1] = array_merge($members[1], $m[1]);
             } else {
-                throw new Exception('Failed to parse HTML.');
+                throw new Services_Mailman_Exception('Failed to parse HTML.');
             }
         }
         return $members;
@@ -439,7 +440,7 @@ class Services_Mailman
      *
      * @return string Returns the version of Mailman
      *
-     * @throws Exception When unable to fetch HTML or unable to parse HTML.
+     * @throws {@link Services_Mailman_Exception}
      */
     public function version()
     {
@@ -449,13 +450,13 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-            throw new Exception('Unable to fetch HTML.');
+            throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         $p = '#<td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version (.+?)</td>#i';
         if (preg_match($p, $html, $m)) {
             return array_pop($m);
         }
-        throw new Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
 } //end
 //eof
