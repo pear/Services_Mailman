@@ -36,7 +36,7 @@
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
- * @version   SVN: @package_version@
+ * @version   GIT: $Id:$
  * @link      http://php-mailman.sf.net/
  */
 
@@ -51,7 +51,7 @@ require_once 'Services/Mailman/Exception.php';
  * @author    James Wade <hm2k@php.net>
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
- * @version   Release: $Id:$
+ * @version   Release: @package_version@
  * @link      http://php-mailman.sf.net/
  */
 class Services_Mailman
