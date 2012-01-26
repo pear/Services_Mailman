@@ -8,7 +8,7 @@ $testURL = 'http://mail.cpanel.net/mailman/admin';
 
 require_once 'Services/Mailman.php';
 
-$mailman = new Mailman($testURL);
+$mailman = new Services_Mailman($testURL);
 $lists=$mailman->lists();
 print_r($lists);
 echo $mailman->getError() . "\n";

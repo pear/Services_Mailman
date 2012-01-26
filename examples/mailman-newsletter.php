@@ -14,7 +14,7 @@ $_mmerror='There was some kind of error, check and try again.';
 		$_email=filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
         if ($_email) {
             require 'Services/Mailman.php';
-            $mm=new Mailman($_mmurl,$_mmlist,$_mmpw);
+            $mm=new Services_Mailman($_mmurl,$_mmlist,$_mmpw);
             $result=false;
             if ($_POST['sub'] == 1) {
                 $result=$mm->subscribe($_email);
