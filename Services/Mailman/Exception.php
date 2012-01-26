@@ -39,8 +39,6 @@
  * @link      http://php-mailman.sf.net/
  */
 
-require_once 'PEAR/Exception.php';
-
  /**
  * Base exception for the {@link Services_Mailman} package
  *
@@ -52,9 +50,7 @@ require_once 'PEAR/Exception.php';
  * @version   Release: $Id:$
  * @link      http://php-mailman.sf.net/
  */
-class Services_Mailman_Exception extends PEAR_Exception
+class Services_Mailman_Exception extends Exception
 {
 
 }
-
-?>
