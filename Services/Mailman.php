@@ -83,9 +83,9 @@ class Services_Mailman
     /**
      * Constructor
      *
-     * @param string $adminURL Set the URL to the Mailman "Admin Links" page
-     * @param string $list     Set the name of the list
-     * @param string $adminPW  Set admin password of the list
+     * @param string        $adminURL Set the URL to the Mailman "Admin Links" page
+     * @param string        $list     Set the name of the list
+     * @param string        $adminPW  Set admin password of the list
      * @param HTTP_Request2 $request  Provide your HTTP request instance
      *
      * @return Services_Mailman
