@@ -452,8 +452,18 @@ class Services_Mailman
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
-        $p = '#<td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version (.+?)</td>#i';
+        /*$p = '#<td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version (.+?)</td>#i';
         if (preg_match($p, $html, $m)) {
+            return array_pop($m);
+        }*/
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $content = $xpath->query('//table[last()]')->item(0)->textContent;
+        libxml_clear_errors();
+        if (preg_match('#version ([\d-.]+)#is', $content, $m)) {
             return array_pop($m);
         }
         throw new Services_Mailman_Exception('Failed to parse HTML.');
