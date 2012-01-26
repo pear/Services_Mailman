@@ -309,7 +309,7 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-           throw new Services_Mailman_Exception('Unable to fetch HTML.');
+            throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
             return $this;
@@ -347,7 +347,7 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-           throw new Services_Mailman_Exception('Unable to fetch HTML.');
+            throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
             return $this;
@@ -387,7 +387,7 @@ class Services_Mailman
         $url = $this->adminURL . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
-           throw new Services_Mailman_Exception('Unable to fetch HTML.');
+            throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
         //TODO:parse html
         return $html;
