@@ -26,6 +26,9 @@
    <file name="Services/Mailman.php" role="php">
     <tasks:replace from="@package_version@" to="version" type="package-info" />
    </file>
+   <file name="Services/Mailman/Exception.php" role="php">
+    <tasks:replace from="@package_version@" to="version" type="package-info" />
+   </file>
    <file baseinstalldir="Services_Mailman" name="examples/mailman-newsletter.php" role="doc" />
   </dir>
  </contents>
