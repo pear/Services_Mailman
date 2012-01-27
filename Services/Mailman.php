@@ -368,29 +368,97 @@ class Services_Mailman
      *      &adminpw=<adminpassword>)
      *
      * @param string $email Valid email address of a member
+     * 
+     * @param bool $digest Set the Digest on (1) or off (0)
      *
      * @return string Returns unparsed HTML
      *
      * @throws {@link Services_Mailman_Exception}
      */
-    public function setDigest($email)
+    public function setDigest($email,$digest = 1)
+    {
+        return setOption($email, 'digest', $digest ? 1 : 0);
+    }
+
+    /**
+     * Set options
+     *
+     * @param string $email Valid email address of a member
+     *
+     * @param string $option A valid option
+     *
+     * @param string $value A value for the given option
+     *
+     * @return string Returns unparsed HTML
+     *
+     * @throws {@link Services_Mailman_Exception}
+     */
+    public function setOption($email, $option, $value)
     {
         if (!is_string($email)) {
             throw new Services_Mailman_Exception(
-                'setDigest() expects parameter 1 to be string, ' .
+                'setOption() expects parameter 1 to be string, ' .
                 gettype($email) . ' given'
             );
         }
-        $path = '/' . $this->list . '/members';
-        $query = array('user' => $email,
-                        $email . '_digest' => 1,
-                        'setmemberopts_btn' => 'Submit%20Your%20Changes',
-                        'allmodbit_val' => 0,
-                        $email . '_language' => 'en',
-                        $email . '_nodupes' => 1,
+        $path = '/options/' . $this->list . '/' . $email;
+        $query = array( 'options-submit' => 'Submit+My+Changes',
                         'adminpw' => $this->adminPW);
+        $options = array( 'new-address',
+            'fullname',
+            'newpw',
+            'disablemail',
+            'digest','mime',
+            'dontreceive',
+            'ackposts',
+            'remind',
+            'conceal',
+            'rcvtopic',
+            'nodupes');
+        if ($option == 'new-address') {
+            $query['new-address'] = $value;
+            $query['confirm-address'] = $value;
+        }
+        elseif ($option == 'fullname') {
+            $query['fullname'] = $value;
+        }
+        elseif ($option == 'newpw') {
+            $query['newpw'] = $value;
+            $query['confpw'] = $value;
+        }
+        elseif ($option == 'disablemail') {
+            $query['disablemail'] = $value;
+        }
+        elseif ($option == 'digest') {
+            $query['digest'] = $value;
+        }
+        elseif ($option == 'mime') {
+            $query['mime'] = $value;
+        }
+        elseif ($option == 'dontreceive') {
+            $query['dontreceive'] = $value;
+        }
+        elseif ($option == 'ackposts') {
+            $query['ackposts'] = $value;
+        }
+        elseif ($option == 'remind') {
+            $query['remind'] = $value;
+        }
+        elseif ($option == 'conceal') {
+            $query['conceal'] = $value;
+        }
+        elseif ($option == 'rcvtopic') {
+            $query['rcvtopic'] = $value;
+        }
+        elseif ($option == 'nodupes') {
+            $query['nodupes'] = $value;
+        }
+        else {
+            throw new Services_Mailman_Exception('Invalid option.');
+        }
+
         $query = http_build_query($query, '', '&');
-        $url = $this->adminURL . $path . '?' . $query;
+        $url = dirname($this->adminURL) . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
@@ -398,6 +466,7 @@ class Services_Mailman
         //TODO:parse html
         return $html;
     }
+
     /**
      * List members
      *
