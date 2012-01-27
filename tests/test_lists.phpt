@@ -11,7 +11,6 @@ require_once 'Services/Mailman.php';
 $mailman = new Services_Mailman($testURL);
 $lists=$mailman->lists();
 print_r($lists);
-echo $mailman->getError() . "\n";
 
 ?>
 --EXPECT--
