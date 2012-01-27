@@ -109,11 +109,6 @@ class Services_Mailman
      */
     public function setList($string)
     {
-        if (empty($string)) {
-            throw new Services_Mailman_Exception(
-                'setList() does not expect parameter 1 to be empty'
-            );
-        }
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
                 'setList() expects parameter 1 to be string, ' .
