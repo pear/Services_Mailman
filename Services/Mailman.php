@@ -79,7 +79,7 @@ class Services_Mailman
      *
      * @var HTTP_Request2 $request
      */
-    protected $request = null;
+    public $request = null;
     /**
      * Constructor
      *
@@ -209,10 +209,10 @@ class Services_Mailman
         $this->request->setUrl($url);
         $this->request->setMethod('GET');
         $html = $this->request->send()->getBody();
-        if ($html && preg_match('#<HTML>#i', $html)) {
+        if (strlen($html)>5) {
             return $html;
         }
-        throw new Services_Mailman_Exception('No HTML content.');
+        throw new Services_Mailman_Exception('Could not fetch HTML.');
     }
 
     /**
@@ -411,9 +411,17 @@ class Services_Mailman
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
-        $p = '#<a href=".*?letter=(.)">.+?</a>#i';
-        if (preg_match_all($p, $html, $m)) {
-            $letters = array_pop($m);
+        //echo $html; die();
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $letters = $xpath->query('/html/body/form/center[1]/table/tr[2]/td/center/a');
+        libxml_clear_errors();
+
+        if ($letters->length>0) {
+            $letters = range('a', 'z');
         } else {
             $letters = array(null);
         }
@@ -422,18 +430,26 @@ class Services_Mailman
             $query = array('adminpw' => $this->adminPW);
             if ($letter != null) {
                 $query['letter'] = $letter;
+                $query = http_build_query($query, '', '&');
+                $url = $this->adminURL . $path . '?' . $query;
+                $html = $this->fetch($url);
             }
-            $query = http_build_query($query, '', '&');
-            $url = $this->adminURL . $path . '?' . $query;
-            $html = $this->fetch($url);
-            $p = '#<td><a href=".+?">(.+?)</a><br><INPUT name=".+?_realname" type="TEXT" value="(.*?)" size="\d{2}" ><INPUT name="user" type="HIDDEN" value=".+?" ></td>#i';
-            if (preg_match_all($p, $html, $m)) {
-                array_shift($m);
-                $members[0] = array_merge($members[0], $m[0]);
-                $members[1] = array_merge($members[1], $m[1]);
-            } else {
-                throw new Services_Mailman_Exception('Failed to parse HTML.');
+            if (!$html) {
+                throw new Services_Mailman_Exception('Unable to fetch HTML.');
             }
+            libxml_use_internal_errors(true);
+            $doc = new DOMDocument();
+            $doc->preserveWhiteSpace = false;
+            $doc->loadHTML($html);
+            $xpath = new DOMXPath($doc);
+            $emails = $xpath->query("/html/body/form/center[1]/table/tr/td[2]/a");
+            $names = $xpath->query("/html/body/form/center[1]/table/tr/td[2]/input[1]/@value");
+            $count = $emails->length;
+            for ($i=0;$i <= $count;$i++) {
+                if ($emails->item($i)) { $members[0][]=$emails->item($i)->nodeValue; }
+                if ($names->item($i)) { $members[1][]=$names->item($i)->nodeValue; }
+            }
+            libxml_clear_errors();
         }
         return $members;
     }
@@ -454,10 +470,6 @@ class Services_Mailman
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
-        /*$p = '#<td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version (.+?)</td>#i';
-        if (preg_match($p, $html, $m)) {
-            return array_pop($m);
-        }*/
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
