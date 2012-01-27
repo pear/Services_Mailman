@@ -377,6 +377,12 @@ class Services_Mailman
      */
     public function setDigest($email)
     {
+        if (!is_string($email)) {
+            throw new Services_Mailman_Exception(
+                'setDigest() expects parameter 1 to be string, ' .
+                gettype($email) . ' given'
+            );
+        }
         $path = '/' . $this->list . '/members';
         $query = array('user' => $email,
                         $email . '_digest' => 1,
@@ -442,8 +448,8 @@ class Services_Mailman
             $doc->preserveWhiteSpace = false;
             $doc->loadHTML($html);
             $xpath = new DOMXPath($doc);
-            $emails = $xpath->query("/html/body/form/center[1]/table/tr/td[2]/a");
-            $names = $xpath->query("/html/body/form/center[1]/table/tr/td[2]/input[1]/@value");
+            $emails = $xpath->query('/html/body/form/center[1]/table/tr/td[2]/a');
+            $names = $xpath->query('/html/body/form/center[1]/table/tr/td[2]/input[1]/@value');
             $count = $emails->length;
             for ($i=0;$i <= $count;$i++) {
                 if ($emails->item($i)) { $members[0][]=$emails->item($i)->nodeValue; }
