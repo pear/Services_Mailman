@@ -44,7 +44,6 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Services_Mailman_AllTests::main');
 }
 
-require_once 'PHPUnit/Framework.php';
 require_once 'PHPUnit/Extensions/PhptTestSuite.php';
 require_once 'PHPUnit/TextUI/TestRunner.php';
 

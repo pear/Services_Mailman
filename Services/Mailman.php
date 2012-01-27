@@ -90,7 +90,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      */
-    public function __construct($adminURL, $list = '', $adminPW = '', HTTP_Request2 $request = null)
+    public function __construct($adminURL, $list, $adminPW = '', HTTP_Request2 $request = null)
     {
         $this->setList($list);
         $this->setadminURL($adminURL);
@@ -185,6 +185,8 @@ class Services_Mailman
     {
         if ($object === null) {
             $this->request = new HTTP_Request2();
+        } elseif ($object instanceof HTTP_Request2) {
+            $this->request = $object;
         }
         return $this;
     }
@@ -231,7 +233,7 @@ class Services_Mailman
             return false;
         }
         $match = '#<tr.*?>\s+<td><a href="(.+?)"><strong>(.+?)</strong></a></td>\s+';
-        $match .= '<td><em>(.+?)</em></td>\s+</tr>#i';
+        $match .= '<td>(<em>)?(.+?)(</em>)?</td>\s+</tr>#i';
         $a = array();
         if (preg_match_all($match, $html, $m)) {
             if (!$m) {
