@@ -225,26 +225,31 @@ class Services_Mailman
         if (!$html) {
             return false;
         }
-        $match = '#<tr.*?>\s+<td><a href="(.+?)"><strong>(.+?)</strong></a></td>\s+';
-        $match .= '<td><em>(.+?)</em></td>\s+</tr>#i';
-        $a = array();
-        if (preg_match_all($match, $html, $m)) {
-            if (!$m) {
-                throw new Services_Mailman_Exception('Unable to match any lists');
-            }
-            foreach ($m[0] as $k => $v) {
-                $a[$k][] = $m[1][$k];
-                $a[$k][] = $m[2][$k];
-                $a[$k][] = $m[3][$k];
-                if ($assoc) {
-                    $a[$k]['path'] = basename($m[1][$k]);
-                    $a[$k]['name'] = $m[2][$k];
-                    $a[$k]['desc'] = $m[3][$k];
-                }
-            }
-        } else {
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $paths = $xpath->query('/html/body/table[1]/tr/td[1]/a/@href');
+        $names = $xpath->query('/html/body/table[1]/tr/td[1]/a/strong');
+        $descs = $xpath->query('/html/body/table[1]/tr/td[2]');
+        $count = $names->length;
+        if (!$count) {
             throw new Services_Mailman_Exception('Failed to parse HTML.');
         }
+        for ($i=0;$i <= $count;$i++) {
+            if ($paths->item($i)) {
+                $a[$i][0]=$paths->item($i)?basename($paths->item($i)->nodeValue):'';
+                $a[$i][1]=$names->item($i)?$names->item($i)->nodeValue:'';
+                $a[$i][2]=$descs->item($i)?$descs->item($i+2)->textContent:'';
+                if ($assoc) {
+                    $a[$i]['path'] = $a[$i][0];
+                    $a[$i]['name'] = $a[$i][1];
+                    $a[$i]['desc'] = $a[$i][2];
+                }
+            }
+        }
+        libxml_clear_errors();
         return $a;
     }
 
