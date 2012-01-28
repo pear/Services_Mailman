@@ -15,14 +15,20 @@ $_mmerror='There was some kind of error, check and try again.';
         if ($_email) {
             require 'Services/Mailman.php';
             $mm=new Services_Mailman($_mmurl,$_mmlist,$_mmpw);
-            $result=false;
+            $notice = $_mmsub;
             if ($_POST['sub'] == 1) {
-                $result=$mm->subscribe($_email);
-                $notice=($result != 1)?$_mmerror:$_mmsub;
+                try {
+                    $mm->subscribe($_email);
+                } catch (Services_Mailman_Exception $e) {
+                    $notice = $_mmerror;
+                }
             }
             elseif ($_POST['sub'] == 0) {
-                $result=$mm->unsubscribe($_email);
-                $notice=($result != 1)?$_mmerror:$_mmunsub;
+                try {
+                    $mm->unsubscribe($_email);
+                } catch (Services_Mailman_Exception $e) {
+                    $notice = $_mmerror;
+                }
             }
         } else {
             $notice=$_mmerror;
