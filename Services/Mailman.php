@@ -311,11 +311,21 @@ class Services_Mailman
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
-        if (preg_match('#<h5>Successfully Unsubscribed:</h5>#i', $html)) {
+
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $h5 = $xpath->query('/html/body/h5');
+        $h3 = $xpath->query('/html/body/h3');
+        libxml_clear_errors();
+
+        if ($h5->item(0) && $h5->item(0)->nodeValue == 'Successfully Unsubscribed:') {
             return $this;
         }
-        if (preg_match('#<h3>(.+?)</h3>#i', $html, $m)) {
-            throw new Services_Mailman_Exception(trim(strip_tags($m[1]), ':'));
+        if ($h3) {
+            throw new Services_Mailman_Exception(trim($h3->item(0)->nodeValue,':'));
         }
         throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
@@ -349,11 +359,20 @@ class Services_Mailman
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
-        if (preg_match('#<h5>Successfully subscribed:</h5>#i', $html)) {
+
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $h5 = $xpath->query('/html/body/h5');
+        libxml_clear_errors();
+
+        if ($h5 && $h5->item(0)->nodeValue == 'Successfully subscribed:') {
             return $this;
         }
-        if (preg_match('#<h5>(.+?)</h5>#i', $html, $m)) {
-            throw new Services_Mailman_Exception(trim(strip_tags($m[1]), ':'));
+        elseif ($h5) {
+            throw new Services_Mailman_Exception(trim($h5->item(0)->nodeValue,':'));
         }
         throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
