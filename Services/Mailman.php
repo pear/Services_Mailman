@@ -288,7 +288,7 @@ class Services_Mailman
      * Unsubscribe
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members/remove?send_unsub_ack_to_this_batch=0
-     *      &send_unsub_notifications_to_list_owner=0&unsubscribees_upload=<email-address>&adminpw=<adminpassword>)
+     *      &send_unsub_notifications_to_list_owner=0&unsubscribees=<email-address>&adminpw=<adminpassword>)
      *
      * @param string $email Valid email address of a member to unsubscribe
      *
@@ -302,7 +302,7 @@ class Services_Mailman
         $query = array(
             'send_unsub_ack_to_this_batch' => 0,
             'send_unsub_notifications_to_list_owner' => 0,
-            'unsubscribees_upload' => $email,
+            'unsubscribees' => $email,
             'adminpw' => $this->adminPW
         );
         $query = http_build_query($query, '', '&');
