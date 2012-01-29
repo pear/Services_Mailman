@@ -1,0 +1,142 @@
+
+
+<HTML>
+<HEAD>
+<LINK REL="SHORTCUT ICON" HREF="/img-sys/mm-icon.png">
+<META http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<TITLE>Test Administration (Membership&nbsp;Management...)</TITLE>
+</HEAD>
+<BODY bgcolor="white"
+dir="ltr">
+<center><h2>Test mailing list administration<br>Membership&nbsp;Management... Section</h2></center><hr>
+<FORM action="../../../admin/test_example.co.uk/members/list" method="POST" enctype="multipart/form-data">
+
+  <table WIDTH="100%">
+    <tr>
+      <td><center><strong>Configuration Categories</strong></center></td>
+      <td><center><strong>Other Administrative Activities</strong></center></td>
+    </tr>
+    <tr>
+      <td>
+          <table>
+            <tr VALIGN="top">
+              <td>
+                  <ul>
+                  <li><a href="../../../admin/test_example.co.uk/general">General Options</a>
+                  <li><a href="../../../admin/test_example.co.uk/passwords">Passwords</a>
+                  <li><a href="../../../admin/test_example.co.uk/language">Language&nbsp;options</a>
+                  <li><strong>Membership&nbsp;Management...</strong>
+<ul>
+<li><a href="../../../admin/test_example.co.uk/members/list"><strong>[Membership&nbsp;List]</strong></a>
+<li><a href="../../../admin/test_example.co.uk/members/add">Mass&nbsp;Subscription</a>
+<li><a href="../../../admin/test_example.co.uk/members/remove">Mass&nbsp;Removal</a>
+</ul>
+
+                  <li><a href="../../../admin/test_example.co.uk/nondigest">Non-digest&nbsp;options</a>
+                  <li><a href="../../../admin/test_example.co.uk/digest">Digest options</a>
+                  </ul>
+</td>
+              <td>
+                  <ul>
+                  <li><a href="../../../admin/test_example.co.uk/privacy">Privacy options...</a>
+                  <li><a href="../../../admin/test_example.co.uk/bounce">Bounce processing</a>
+                  <li><a href="../../../admin/test_example.co.uk/archive">Archiving Options</a>
+                  <li><a href="../../../admin/test_example.co.uk/gateway">Mail&lt;-&gt;News&nbsp;gateways</a>
+                  <li><a href="../../../admin/test_example.co.uk/autoreply">Auto-responder</a>
+                  <li><a href="../../../admin/test_example.co.uk/contentfilter">Content&nbsp;filtering</a>
+                  <li><a href="../../../admin/test_example.co.uk/topics">Topics</a>
+                  </ul>
+</td>
+            </tr>
+          </table>
+</td>
+      <td>
+          <ul>
+          <li><a href="../../../admindb/test_example.co.uk">Tend to pending moderator requests</a>
+          <li><a href="../../../listinfo/test_example.co.uk">Go to the general list information page</a>
+          <li><a href="../../../edithtml/test_example.co.uk">Edit the public HTML pages and text files</a>
+          <li><a href="http://example.co.uk/pipermail/test_example.co.uk/">Go to list archives</a><br>&nbsp;<br>
+          <li><a href="../../../admin/test_example.co.uk/logout"><FONT SIZE="+2"><b>Logout</b></FONT></a>
+          </ul>
+</td>
+    </tr>
+  </table>
+<hr>Make your changes in the following section, then submit them
+        using the <em>Submit Your Changes</em> button below.<p>
+  <table WIDTH="100%">
+    <tr>
+      <td COLSPAN="2" BGCOLOR="#99ccff"><center><h2>Membership List</h2></center></td>
+    </tr>
+  </table>
+
+  <table WIDTH="100%">
+    <tr>
+      <td><div align="right">Find member <a href="http://docs.python.org/library/re.html#regular-expression-syntax">(help)</a>:</div></td>
+      <td><INPUT name="findmember" type="TEXT" value="fail" size="40" ></td>
+      <td><INPUT name="findmember_btn" type="SUBMIT" value="Search..." ></td>
+    </tr>
+  </table>
+<hr><p><a href="http://example.co.uk/mailman/admin/test_example.co.uk/members/list?legend=yes">Click here to include the legend for this table.</a><center>
+  <table WIDTH="90%" BORDER="2">
+    <tr>
+      <td COLSPAN="11" BGCOLOR="#dddddd"><center><em>0 members total</em></center></td>
+    </tr>
+    <tr>
+      <td BGCOLOR="#dddddd"><center>unsub</center></td>
+      <td BGCOLOR="#dddddd"><center>member address<br>member name</center></td>
+      <td BGCOLOR="#dddddd"><center>mod</center></td>
+      <td BGCOLOR="#dddddd"><center>hide</center></td>
+      <td BGCOLOR="#dddddd"><center>nomail<br>[reason]</center></td>
+      <td BGCOLOR="#dddddd"><center>ack</center></td>
+      <td BGCOLOR="#dddddd"><center>not metoo</center></td>
+      <td BGCOLOR="#dddddd"><center>nodupes</center></td>
+      <td BGCOLOR="#dddddd"><center>digest</center></td>
+      <td BGCOLOR="#dddddd"><center>plain</center></td>
+      <td BGCOLOR="#dddddd"><center>language</center></td>
+    </tr>
+  </table>
+</center><center>
+  <table CELLPADDING="2" CELLSPACING="0" BORDER="0">
+    <tr>
+      <td ALIGN="middle"><strong><INPUT name="setmemberopts_btn" type="SUBMIT" value="Submit Your Changes" ></strong></td>
+    </tr>
+  </table>
+</center><hr>
+
+  <table WIDTH="100%">
+    <tr>
+      <td COLSPAN="2" BGCOLOR="#99ccff"><center><h2>Additional Member Tasks</h2></center></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td COLSPAN="2"><li>Set everyone's moderation bit, including
+            those members not currently visible</td>
+    </tr>
+    <tr>
+      <td>
+          <table CELLSPACING="5">
+            <tr>
+              <td><INPUT name="allmodbit_val" type="RADIO" value="0" CHECKED >Off</td>
+              <td><INPUT name="allmodbit_val" type="RADIO" value="1" >On</td>
+            </tr>
+          </table>
+</td>
+      <td><INPUT name="allmodbit_btn" type="SUBMIT" value="Set" ></td>
+    </tr>
+  </table>
+
+</FORM>
+<hr><address><a href="../../../listinfo/test_example.co.uk">Test</a> list run by <a href="mailto:test-owner@example.co.uk">admin at example.co.uk</a><br><a href="../../../admin/test_example.co.uk">Test administrative interface</a> (requires authorization)<br><a href="../../../listinfo">Overview of all example.co.uk mailing lists</a><p>
+<table WIDTH="100%" BORDER="0">
+  <tr>
+    <td><img src="/img-sys/mailman.jpg" alt="Delivered by Mailman" border=0><br>version 2.1.14-1</td>
+    <td><img src="/img-sys/PythonPowered.png" alt="Python Powered" border=0></td>
+    <td><img src="/img-sys/gnu-head-tiny.jpg" alt="GNU's Not Unix" border=0></td>
+  </tr>
+</table>
+</address>
+</BODY>
+</HTML>

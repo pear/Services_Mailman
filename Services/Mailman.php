@@ -222,9 +222,6 @@ class Services_Mailman
     public function lists($assoc = true)
     {
         $html = $this->fetch($this->adminURL);
-        if (!$html) {
-            return false;
-        }
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
@@ -237,7 +234,8 @@ class Services_Mailman
         if (!$count) {
             throw new Services_Mailman_Exception('Failed to parse HTML.');
         }
-        for ($i=0;$i <= $count;$i++) {
+        $a = array();
+        for ($i=0;$i < $count;$i++) {
             if ($paths->item($i)) {
                 $a[$i][0]=$paths->item($i)?basename($paths->item($i)->nodeValue):'';
                 $a[$i][1]=$names->item($i)?$names->item($i)->nodeValue:'';
@@ -254,22 +252,28 @@ class Services_Mailman
     }
 
     /**
-     * List a member
+     * Find a member
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?findmember=<email-address>
      *      &setmemberopts_btn&adminpw=<adminpassword>)
      *
-     * @param string $email A valid email address of a member to lookup
+     * @param string $string A search string for member
      *
      * @return string Returns unparsed HTML
      *
      * @throws {@link Services_Mailman_Exception}
      */
-    public function member($email)
+    public function member($string)
     {
+        if (!is_string($string)) {
+            throw new Services_Mailman_Exception(
+                'member() expects parameter 1 to be string, ' .
+                gettype($string) . ' given'
+            );
+        }
         $path  = '/' . $this->list . '/members';
         $query = array(
-            'findmember'        => $email, 
+            'findmember'        => $string, 
             'setmemberopts_btn' => null,
             'adminpw'           => $this->adminPW
         );
@@ -277,11 +281,35 @@ class Services_Mailman
         $query = http_build_query($query, '', '&');
         $url   = $this->adminURL . $path . '?' . $query;
         $html  = $this->fetch($url);
-        if (!$html) {
-            throw new Services_Mailman_Exception('Unable to fetch HTML.');
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $queries = array();
+        $queries['address'] = $xpath->query('/html/body/form/center/table/tr/td[2]/a');
+        $queries['realname'] = $xpath->query('/html/body/form/center/table/tr/td[2]/input[type=TEXT]/@value');
+        $queries['mod'] = $xpath->query('/html/body/form/center/table/tr/td[3]/center/input/@value');
+        $queries['hide'] = $xpath->query('/html/body/form/center/table/tr/td[4]/center/input/@value');
+        $queries['nomail'] = $xpath->query('/html/body/form/center/table/tr/td[5]/center/input/@value');
+        $queries['ack'] = $xpath->query('/html/body/form/center/table/tr/td[6]/center/input/@value');
+        $queries['notmetoo'] = $xpath->query('/html/body/form/center/table/tr/td[7]/center/input/@value');
+        $queries['nodupes'] = $xpath->query('/html/body/form/center/table/tr/td[8]/center/input/@value');
+        $queries['digest'] = $xpath->query('/html/body/form/center/table/tr/td[9]/center/input/@value');
+        $queries['plain'] = $xpath->query('/html/body/form/center/table/tr/td[10]/center/input/@value');
+        $queries['language'] = $xpath->query('/html/body/form/center/table/tr/td[11]/center/select/option[@selected]/@value');
+        libxml_clear_errors();
+        $count = $queries['address']->length;
+        if (!$count) {
+            throw new Services_Mailman_Exception('No match.');
         }
-        //TODO:parse html
-        return $html;
+        $a = array();
+        for ($i=0;$i < $count;$i++) {
+            foreach ($queries as $key => $query) {
+                $a[$i][$key]=$query->item($i)?$query->item($i)->nodeValue:'';
+            }
+        }
+        return $a;
     }
     
     /**
@@ -537,7 +565,7 @@ class Services_Mailman
             $emails = $xpath->query('/html/body/form/center[1]/table/tr/td[2]/a');
             $names = $xpath->query('/html/body/form/center[1]/table/tr/td[2]/input[1]/@value');
             $count = $emails->length;
-            for ($i=0;$i <= $count;$i++) {
+            for ($i=0;$i < $count;$i++) {
                 if ($emails->item($i)) { $members[0][]=$emails->item($i)->nodeValue; }
                 if ($names->item($i)) { $members[1][]=$names->item($i)->nodeValue; }
             }
