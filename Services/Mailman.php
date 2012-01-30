@@ -422,9 +422,9 @@ class Services_Mailman
      *
      * @throws {@link Services_Mailman_Exception}
      */
-    public function setDigest($email,$digest = 1)
+    public function setDigest($email, $digest = 1)
     {
-        return setOption($email, 'digest', $digest ? 1 : 0);
+        return $this->setOption($email, 'digest', $digest ? 1 : 0);
     }
 
     /**
@@ -448,69 +448,69 @@ class Services_Mailman
                 gettype($email) . ' given'
             );
         }
-        $path = '/options/' . $this->list . '/' . $email;
+        $path = '/options/' . $this->list . '/' . str_replace('@', '--at--', $email);
         $query = array('password' => $this->adminPW);
         if ($option == 'new-address') {
             $query['new-address'] = $value;
             $query['confirm-address'] = $value;
             $query['change-of-address'] = 'Change+My+Address+and+Name';
-            $xp="//input[@name='$option']/@value";
+            $xp = "//input[@name='$option']/@value";
         }
         elseif ($option == 'fullname') {
             $query['fullname'] = $value;
             $query['change-of-address'] = 'Change+My+Address+and+Name';
-            $xp="//input[@name='$option']/@value";
+            $xp = "//input[@name='$option']/@value";
         }
         elseif ($option == 'newpw') {
             $query['newpw'] = $value;
             $query['confpw'] = $value;
             $query['changepw'] = 'Change+My+Password';
-            $xp="//input[@name='$option']/@value";
+            $xp = "//input[@name='$option']/@value";
         }
         elseif ($option == 'disablemail') {
             $query['disablemail'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'digest') {
             $query['digest'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'mime') {
             $query['mime'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'dontreceive') {
             $query['dontreceive'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'ackposts') {
             $query['ackposts'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'remind') {
             $query['remind'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'conceal') {
             $query['conceal'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'rcvtopic') {
             $query['rcvtopic'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         elseif ($option == 'nodupes') {
             $query['nodupes'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
-            $xp="//input[@name='$option' and @checked='checked']/@value";
+            $xp = "//input[@name='$option' and @checked]/@value";
         }
         else {
             throw new Services_Mailman_Exception('Invalid option.');
@@ -548,7 +548,6 @@ class Services_Mailman
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
         }
-        //echo $html; die();
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
