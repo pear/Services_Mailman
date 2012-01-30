@@ -353,7 +353,7 @@ class Services_Mailman
             return $this;
         }
         if ($h3) {
-            throw new Services_Mailman_Exception(trim($h3->item(0)->nodeValue,':'));
+            throw new Services_Mailman_Exception(trim($h3->item(0)->nodeValue, ':'));
         }
         throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
@@ -398,9 +398,8 @@ class Services_Mailman
 
         if ($h5 && $h5->item(0)->nodeValue == 'Successfully subscribed:') {
             return $this;
-        }
-        elseif ($h5) {
-            throw new Services_Mailman_Exception(trim($h5->item(0)->nodeValue,':'));
+        } elseif ($h5) {
+            throw new Services_Mailman_Exception(trim($h5->item(0)->nodeValue, ':'));
         }
         throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
@@ -414,9 +413,9 @@ class Services_Mailman
      *      &allmodbit_val=0&<email-address>_language=en&<email-address>_nodupes=1
      *      &adminpw=<adminpassword>)
      *
-     * @param string $email Valid email address of a member
+     * @param string $email  Valid email address of a member
      * 
-     * @param bool $digest Set the Digest on (1) or off (0)
+     * @param bool   $digest Set the Digest on (1) or off (0)
      *
      * @return string Returns unparsed HTML
      *
@@ -430,11 +429,11 @@ class Services_Mailman
     /**
      * Set an option
      *
-     * @param string $email Valid email address of a member
+     * @param string $email  Valid email address of a member
      *
      * @param string $option A valid option
      *
-     * @param string $value A value for the given option
+     * @param string $value  A value for the given option
      *
      * @return string Returns resulting value, if successful.
      *
@@ -455,64 +454,52 @@ class Services_Mailman
             $query['confirm-address'] = $value;
             $query['change-of-address'] = 'Change+My+Address+and+Name';
             $xp = "//input[@name='$option']/@value";
-        }
-        elseif ($option == 'fullname') {
+        } elseif ($option == 'fullname') {
             $query['fullname'] = $value;
             $query['change-of-address'] = 'Change+My+Address+and+Name';
             $xp = "//input[@name='$option']/@value";
-        }
-        elseif ($option == 'newpw') {
+        } elseif ($option == 'newpw') {
             $query['newpw'] = $value;
             $query['confpw'] = $value;
             $query['changepw'] = 'Change+My+Password';
             $xp = "//input[@name='$option']/@value";
-        }
-        elseif ($option == 'disablemail') {
+        } elseif ($option == 'disablemail') {
             $query['disablemail'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'digest') {
+        } elseif ($option == 'digest') {
             $query['digest'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'mime') {
+        } elseif ($option == 'mime') {
             $query['mime'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'dontreceive') {
+        } elseif ($option == 'dontreceive') {
             $query['dontreceive'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'ackposts') {
+        } elseif ($option == 'ackposts') {
             $query['ackposts'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'remind') {
+        } elseif ($option == 'remind') {
             $query['remind'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'conceal') {
+        } elseif ($option == 'conceal') {
             $query['conceal'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'rcvtopic') {
+        } elseif ($option == 'rcvtopic') {
             $query['rcvtopic'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        elseif ($option == 'nodupes') {
+        } elseif ($option == 'nodupes') {
             $query['nodupes'] = $value;
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
-        }
-        else {
+        } else {
             throw new Services_Mailman_Exception('Invalid option.');
         }
         $query = http_build_query($query, '', '&');
@@ -582,8 +569,12 @@ class Services_Mailman
             $names = $xpath->query('/html/body/form/center[1]/table/tr/td[2]/input[1]/@value');
             $count = $emails->length;
             for ($i=0;$i < $count;$i++) {
-                if ($emails->item($i)) { $members[0][]=$emails->item($i)->nodeValue; }
-                if ($names->item($i)) { $members[1][]=$names->item($i)->nodeValue; }
+                if ($emails->item($i)) {
+                    $members[0][]=$emails->item($i)->nodeValue;
+                }
+                if ($names->item($i)) {
+                    $members[1][]=$names->item($i)->nodeValue;
+                }
             }
             libxml_clear_errors();
         }
