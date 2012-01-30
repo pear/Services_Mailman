@@ -428,7 +428,7 @@ class Services_Mailman
     }
 
     /**
-     * Set options
+     * Set an option
      *
      * @param string $email Valid email address of a member
      *
@@ -436,7 +436,7 @@ class Services_Mailman
      *
      * @param string $value A value for the given option
      *
-     * @return string Returns unparsed HTML
+     * @return string Returns resulting value, if successful.
      *
      * @throws {@link Services_Mailman_Exception}
      */
@@ -449,69 +449,86 @@ class Services_Mailman
             );
         }
         $path = '/options/' . $this->list . '/' . $email;
-        $query = array( 'options-submit' => 'Submit+My+Changes',
-                        'adminpw' => $this->adminPW);
-        $options = array( 'new-address',
-            'fullname',
-            'newpw',
-            'disablemail',
-            'digest','mime',
-            'dontreceive',
-            'ackposts',
-            'remind',
-            'conceal',
-            'rcvtopic',
-            'nodupes');
+        $query = array('password' => $this->adminPW);
         if ($option == 'new-address') {
             $query['new-address'] = $value;
             $query['confirm-address'] = $value;
+            $query['change-of-address'] = 'Change+My+Address+and+Name';
+            $xp="//input[@name='$option']/@value";
         }
         elseif ($option == 'fullname') {
             $query['fullname'] = $value;
+            $query['change-of-address'] = 'Change+My+Address+and+Name';
+            $xp="//input[@name='$option']/@value";
         }
         elseif ($option == 'newpw') {
             $query['newpw'] = $value;
             $query['confpw'] = $value;
+            $query['changepw'] = 'Change+My+Password';
+            $xp="//input[@name='$option']/@value";
         }
         elseif ($option == 'disablemail') {
             $query['disablemail'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'digest') {
             $query['digest'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'mime') {
             $query['mime'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'dontreceive') {
             $query['dontreceive'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'ackposts') {
             $query['ackposts'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'remind') {
             $query['remind'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'conceal') {
             $query['conceal'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'rcvtopic') {
             $query['rcvtopic'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         elseif ($option == 'nodupes') {
             $query['nodupes'] = $value;
+            $query['options-submit'] = 'Submit+My+Changes';
+            $xp="//input[@name='$option' and @checked='checked']/@value";
         }
         else {
             throw new Services_Mailman_Exception('Invalid option.');
         }
-
         $query = http_build_query($query, '', '&');
         $url = dirname($this->adminURL) . $path . '?' . $query;
         $html = $this->fetch($url);
-        if (!$html) {
-            throw new Services_Mailman_Exception('Unable to fetch HTML.');
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+        $query = $xpath->query($xp);
+        libxml_clear_errors();
+        if ($query->item(0)) {
+            return $query->item(0)->nodeValue;
         }
-        //TODO:parse html
-        return $html;
+        throw new Services_Mailman_Exception('Failed to parse HTML.');
     }
 
     /**
