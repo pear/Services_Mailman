@@ -8,7 +8,7 @@ Allows the integration of Mailman into a dynamic website without using Python or
 * @author    James Wade <hm2k@php.net>
 * @copyright 2011 James Wade
 * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
-* @version   SVN: @package_version@
+* @version   Release: @package_version@
 * @link      http://php-mailman.sf.net/
 
 Credits
