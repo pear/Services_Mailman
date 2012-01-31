@@ -178,9 +178,7 @@ class Services_Mailman
      */
     public function setRequest(HTTP_Request2 $object = null)
     {
-        if ($object === null) {
-            $this->request = new HTTP_Request2();
-        }
+        $this->request = ($object instanceof HTTP_Request2) ? $object : new HTTP_Request2();
         return $this;
     }
 
@@ -259,7 +257,7 @@ class Services_Mailman
      *
      * @param string $string A search string for member
      *
-     * @return string Returns unparsed HTML
+     * @return string Return an array of members that match the string
      *
      * @throws {@link Services_Mailman_Exception}
      */
@@ -417,7 +415,7 @@ class Services_Mailman
      * 
      * @param bool   $digest Set the Digest on (1) or off (0)
      *
-     * @return string Returns unparsed HTML
+     * @return string Returns 1 if set on, or 0 if set off.
      *
      * @throws {@link Services_Mailman_Exception}
      */
