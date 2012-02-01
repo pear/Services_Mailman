@@ -87,8 +87,6 @@ class Services_Mailman
      * @param string        $list     Set the name of the list
      * @param string        $adminPw  Set admin password of the list
      * @param HTTP_Request2 $request  Provide your HTTP request instance
-     *
-     * @return Services_Mailman
      */
     public function __construct($adminUrl, $list = '', $adminPw = '', HTTP_Request2 $request = null)
     {
@@ -105,7 +103,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function setList($string)
     {
@@ -125,7 +123,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function setAdminUrl($string)
     {
@@ -154,7 +152,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function setAdminPw($string)
     {
@@ -174,7 +172,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function setRequest(HTTP_Request2 $object = null)
     {
@@ -189,7 +187,7 @@ class Services_Mailman
      *
      * @return string Return contents from URL (usually HTML)
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     protected function fetch($url)
     {
@@ -219,7 +217,7 @@ class Services_Mailman
      *
      * @return array   Return an array of lists
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function lists($assoc = true)
     {
@@ -263,7 +261,7 @@ class Services_Mailman
      *
      * @return string Return an array of members (and their options) that match the string
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function member($string)
     {
@@ -324,7 +322,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function unsubscribe($email)
     {
@@ -373,7 +371,7 @@ class Services_Mailman
      *
      * @return Services_Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function subscribe($email, $invite = false)
     {
@@ -421,7 +419,7 @@ class Services_Mailman
      *
      * @return string Returns 1 if set on, or 0 if set off.
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function setDigest($email, $digest = 1)
     {
@@ -439,7 +437,7 @@ class Services_Mailman
      *
      * @return string Returns resulting value, if successful.
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function setOption($email, $option, $value)
     {
@@ -525,7 +523,7 @@ class Services_Mailman
      *
      * @return array  Returns two nested arrays, the first contains email addresses, the second contains names
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function members()
     {
@@ -587,7 +585,7 @@ class Services_Mailman
      *
      * @return string Returns the version of Mailman
      *
-     * @throws {@link Services_Mailman_Exception}
+     * @throws Services_Mailman_Exception
      */
     public function version()
     {
