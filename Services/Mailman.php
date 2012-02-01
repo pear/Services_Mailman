@@ -197,9 +197,13 @@ class Services_Mailman
         if (!$url) {
             throw new Services_Mailman_Exception('Invalid URL');
         }
-        $this->request->setUrl($url);
-        $this->request->setMethod('GET');
-        $html = $this->request->send()->getBody();
+        try {
+            $this->request->setUrl($url);
+            $this->request->setMethod('GET');
+            $html = $this->request->send()->getBody();
+        } catch (HTTP_Request2_Exception $e) {
+            throw new Services_Mailman_Exception($e);
+        } 
         if (strlen($html)>5) {
             return $html;
         }
