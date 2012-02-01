@@ -433,7 +433,7 @@ class Services_Mailman
      *
      * @param string $email  Valid email address of a member
      *
-     * @param string $option A valid option
+     * @param string $option A valid option (new-address, fullname, newpw, disablemail, digest, mime, dontreceive, ackposts, remind, conceal, rcvtopic, nodupes)
      *
      * @param string $value  A value for the given option
      *
