@@ -33,14 +33,14 @@ $mailman->request->setAdapter($mock);
 
 // success
 try {
-	$mailman->member('james');
+	var_dump($mailman->member('james'));
 } catch (Services_Mailman_Exception $e) {
 	echo 'Caught exception: ',  $e->getMessage(), "\n";
 }
 
 // fail
 try {
-	$mailman->member('fail');
+	var_dump($mailman->member('fail'));
 } catch (Services_Mailman_Exception $e) {
 	echo 'Caught exception: ',  $e->getMessage(), "\n";
 }
@@ -48,4 +48,56 @@ try {
 ?>
 --EXPECT--
 
+array(2) {
+  [0]=>
+  array(11) {
+    ["address"]=>
+    string(25) "james.smith@example.co.uk"
+    ["realname"]=>
+    string(0) ""
+    ["mod"]=>
+    string(3) "off"
+    ["hide"]=>
+    string(3) "off"
+    ["nomail"]=>
+    string(3) "off"
+    ["ack"]=>
+    string(3) "off"
+    ["notmetoo"]=>
+    string(3) "off"
+    ["nodupes"]=>
+    string(2) "on"
+    ["digest"]=>
+    string(3) "off"
+    ["plain"]=>
+    string(2) "on"
+    ["language"]=>
+    string(2) "en"
+  }
+  [1]=>
+  array(11) {
+    ["address"]=>
+    string(25) "james.jones@example.co.uk"
+    ["realname"]=>
+    string(0) ""
+    ["mod"]=>
+    string(3) "off"
+    ["hide"]=>
+    string(3) "off"
+    ["nomail"]=>
+    string(3) "off"
+    ["ack"]=>
+    string(3) "off"
+    ["notmetoo"]=>
+    string(3) "off"
+    ["nodupes"]=>
+    string(3) "off"
+    ["digest"]=>
+    string(2) "on"
+    ["plain"]=>
+    string(3) "off"
+    ["language"]=>
+    string(2) "en"
+  }
+}
 Caught exception: No match.
