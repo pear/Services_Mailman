@@ -61,7 +61,7 @@ class Services_Mailman
      *  For example: 'http://www.example.co.uk/mailman/admin'
      * @var string
      */
-    protected $adminURL;
+    protected $adminUrl;
     /**
      * Default name of the list
      *  For example: 'test_example.co.uk'
@@ -73,7 +73,7 @@ class Services_Mailman
      *  For example: 'my-example-password'
      * @var string
      */
-    protected $adminPW;
+    protected $adminPw;
     /**
      * A HTTP request instance
      *
@@ -83,18 +83,18 @@ class Services_Mailman
     /**
      * Constructor
      *
-     * @param string        $adminURL Set the URL to the Mailman "Admin Links" page
+     * @param string        $adminUrl Set the URL to the Mailman "Admin Links" page
      * @param string        $list     Set the name of the list
-     * @param string        $adminPW  Set admin password of the list
+     * @param string        $adminPw  Set admin password of the list
      * @param HTTP_Request2 $request  Provide your HTTP request instance
      *
      * @return Services_Mailman
      */
-    public function __construct($adminURL, $list = '', $adminPW = '', HTTP_Request2 $request = null)
+    public function __construct($adminUrl, $list = '', $adminPw = '', HTTP_Request2 $request = null)
     {
         $this->setList($list);
-        $this->setadminURL($adminURL);
-        $this->setadminPW($adminPW);
+        $this->setAdminUrl($adminUrl);
+        $this->setAdminPw($adminPw);
         $this->setRequest($request);
     }
 
@@ -127,16 +127,16 @@ class Services_Mailman
      *
      * @throws {@link Services_Mailman_Exception}
      */
-    public function setadminURL($string)
+    public function setAdminUrl($string)
     {
         if (empty($string)) {
             throw new Services_Mailman_Exception(
-                'setadminURL() does not expect parameter 1 to be empty'
+                'setAdminUrl() does not expect parameter 1 to be empty'
             );
         }
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
-                'setadminURL() expects parameter 1 to be string, ' .
+                'setAdminUrl() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
         }
@@ -144,7 +144,7 @@ class Services_Mailman
         if (!$string) {
             throw new Services_Mailman_Exception('Invalid URL');
         }
-        $this->adminURL = trim($string, '/');
+        $this->adminUrl = trim($string, '/');
         return $this;
     }
     /**
@@ -156,15 +156,15 @@ class Services_Mailman
      *
      * @throws {@link Services_Mailman_Exception}
      */
-    public function setadminPW($string)
+    public function setAdminPw($string)
     {
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
-                'setadminPW() expects parameter 1 to be string, ' .
+                'setAdminPw() expects parameter 1 to be string, ' .
                 gettype($string) . ' given'
             );
         }
-        $this->adminPW = $string;
+        $this->adminPw = $string;
         return $this;
     }
     /**
@@ -219,7 +219,7 @@ class Services_Mailman
      */
     public function lists($assoc = true)
     {
-        $html = $this->fetch($this->adminURL);
+        $html = $this->fetch($this->adminUrl);
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
@@ -273,11 +273,11 @@ class Services_Mailman
         $query = array(
             'findmember'        => $string, 
             'setmemberopts_btn' => null,
-            'adminpw'           => $this->adminPW
+            'adminpw'           => $this->adminPw
         );
 
         $query = http_build_query($query, '', '&');
-        $url   = $this->adminURL . $path . '?' . $query;
+        $url   = $this->adminUrl . $path . '?' . $query;
         $html  = $this->fetch($url);
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
@@ -329,10 +329,10 @@ class Services_Mailman
             'send_unsub_ack_to_this_batch' => 0,
             'send_unsub_notifications_to_list_owner' => 0,
             'unsubscribees' => $email,
-            'adminpw' => $this->adminPW
+            'adminpw' => $this->adminPw
         );
         $query = http_build_query($query, '', '&');
-        $url = $this->adminURL . $path . '?' . $query;
+        $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
@@ -378,9 +378,9 @@ class Services_Mailman
                         'send_welcome_msg_to_this_batch' => 0,
                         'send_notifications_to_list_owner' => 0,
                         'subscribees' => $email,
-                        'adminpw' => $this->adminPW);
+                        'adminpw' => $this->adminPw);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminURL . $path . '?' . $query;
+        $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
@@ -446,7 +446,7 @@ class Services_Mailman
             );
         }
         $path = '/options/' . $this->list . '/' . str_replace('@', '--at--', $email);
-        $query = array('password' => $this->adminPW);
+        $query = array('password' => $this->adminPw);
         if ($option == 'new-address') {
             $query['new-address'] = $value;
             $query['confirm-address'] = $value;
@@ -501,7 +501,7 @@ class Services_Mailman
             throw new Services_Mailman_Exception('Invalid option.');
         }
         $query = http_build_query($query, '', '&');
-        $url = dirname($this->adminURL) . $path . '?' . $query;
+        $url = dirname($this->adminUrl) . $path . '?' . $query;
         $html = $this->fetch($url);
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
@@ -526,9 +526,9 @@ class Services_Mailman
     public function members()
     {
         $path = '/' . $this->list . '/members';
-        $query = array('adminpw' => $this->adminPW);
+        $query = array('adminpw' => $this->adminPw);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminURL . $path . '?' . $query;
+        $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
@@ -548,11 +548,11 @@ class Services_Mailman
         }
         $members = array(array(), array());
         foreach ($letters as $letter) {
-            $query = array('adminpw' => $this->adminPW);
+            $query = array('adminpw' => $this->adminPw);
             if ($letter != null) {
                 $query['letter'] = $letter;
                 $query = http_build_query($query, '', '&');
-                $url = $this->adminURL . $path . '?' . $query;
+                $url = $this->adminUrl . $path . '?' . $query;
                 $html = $this->fetch($url);
             }
             if (!$html) {
@@ -588,9 +588,9 @@ class Services_Mailman
     public function version()
     {
         $path = '/' . $this->list . '/';
-        $query = array('adminpw' => $this->adminPW);
+        $query = array('adminpw' => $this->adminPw);
         $query = http_build_query($query, '', '&');
-        $url = $this->adminURL . $path . '?' . $query;
+        $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
         if (!$html) {
             throw new Services_Mailman_Exception('Unable to fetch HTML.');
