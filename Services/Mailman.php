@@ -261,7 +261,7 @@ class Services_Mailman
      *
      * @param string $string A search string for member
      *
-     * @return string Return an array of members that match the string
+     * @return string Return an array of members (and their options) that match the string
      *
      * @throws {@link Services_Mailman_Exception}
      */
