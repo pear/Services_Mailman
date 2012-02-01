@@ -47,7 +47,6 @@ try {
 
 ?>
 --EXPECT--
-
 array(2) {
   [0]=>
   array(11) {
@@ -100,4 +99,4 @@ array(2) {
     string(2) "en"
   }
 }
-Caught exception: No match.
+Caught exception: No match

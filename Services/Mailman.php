@@ -110,7 +110,8 @@ class Services_Mailman
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
                 'setList() expects parameter 1 to be string, ' .
-                gettype($string) . ' given'
+                gettype($string) . ' given',
+                Services_Mailman_Exception::USER_INPUT
             );
         }
         $this->list = $string;
@@ -129,18 +130,23 @@ class Services_Mailman
     {
         if (empty($string)) {
             throw new Services_Mailman_Exception(
-                'setAdminUrl() does not expect parameter 1 to be empty'
+                'setAdminUrl() does not expect parameter 1 to be empty',
+                Services_Mailman_Exception::USER_INPUT
             );
         }
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
                 'setAdminUrl() expects parameter 1 to be string, ' .
-                gettype($string) . ' given'
+                gettype($string) . ' given',
+                Services_Mailman_Exception::USER_INPUT
             );
         }
         $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$string) {
-            throw new Services_Mailman_Exception(Services_Mailman_Exception::INVALID_URL);
+            throw new Services_Mailman_Exception(
+                'Invalid URL',
+                Services_Mailman_Exception::INVALID_URL
+            );
         }
         $this->adminUrl = trim($string, '/');
         return $this;
@@ -159,7 +165,8 @@ class Services_Mailman
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
                 'setAdminPw() expects parameter 1 to be string, ' .
-                gettype($string) . ' given'
+                gettype($string) . ' given',
+                Services_Mailman_Exception::USER_INPUT
             );
         }
         $this->adminPw = $string;
@@ -171,8 +178,6 @@ class Services_Mailman
      * @param HTTP_Request2 $object A HTTP request instance (otherwise one will be created)
      *
      * @return Services_Mailman
-     *
-     * @throws Services_Mailman_Exception
      */
     public function setRequest(HTTP_Request2 $object = null)
     {
@@ -193,19 +198,28 @@ class Services_Mailman
     {
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
-            throw new Services_Mailman_Exception(Services_Mailman_Exception::INVALID_URL);
+            throw new Services_Mailman_Exception(
+                'Invalid URL',
+                Services_Mailman_Exception::INVALID_URL
+            );
         }
         try {
             $this->request->setUrl($url);
             $this->request->setMethod('GET');
             $html = $this->request->send()->getBody();
         } catch (HTTP_Request2_Exception $e) {
-            throw new Services_Mailman_Exception($e);
+            throw new Services_Mailman_Exception(
+                $e,
+                Services_Mailman_Exception::HTML_FETCH
+            );
         } 
         if (strlen($html)>5) {
             return $html;
         }
-        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_FETCH);
+        throw new Services_Mailman_Exception(
+            'Could not fetch HTML',
+            Services_Mailman_Exception::HTML_FETCH
+        );
     }
 
     /**
@@ -232,7 +246,10 @@ class Services_Mailman
         $descs = $xpath->query('/html/body/table[1]/tr/td[2]');
         $count = $names->length;
         if (!$count) {
-            throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
+            throw new Services_Mailman_Exception(
+                'Failed to parse HTML',
+                Services_Mailman_Exception::HTML_PARSE
+            );
         }
         $a = array();
         for ($i=0;$i < $count;$i++) {
@@ -268,7 +285,8 @@ class Services_Mailman
         if (!is_string($string)) {
             throw new Services_Mailman_Exception(
                 'member() expects parameter 1 to be string, ' .
-                gettype($string) . ' given'
+                gettype($string) . ' given',
+                Services_Mailman_Exception::USER_INPUT
             );
         }
         $path  = '/' . $this->list . '/members';
@@ -301,12 +319,15 @@ class Services_Mailman
         libxml_clear_errors();
         $count = $queries['address']->length;
         if (!$count) {
-            throw new Services_Mailman_Exception('No match.');
+            throw new Services_Mailman_Exception(
+                'No match',
+                Services_Mailman_Exception::NO_MATCH
+            );
         }
         $a = array();
         for ($i=0;$i < $count;$i++) {
             foreach ($queries as $key => $query) {
-                $a[$i][$key]=$query->item($i)?$query->item($i)->nodeValue:'';
+                $a[$i][$key] = $query->item($i) ? $query->item($i)->nodeValue : '';
             }
         }
         return $a;
@@ -348,9 +369,15 @@ class Services_Mailman
             return $this;
         }
         if ($h3) {
-            throw new Services_Mailman_Exception(trim($h3->item(0)->nodeValue, ':'));
+            throw new Services_Mailman_Exception(
+                trim($h3->item(0)->nodeValue, ':'),
+                Services_Mailman_Exception::HTML_PARSE
+            );
         }
-        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
+        throw new Services_Mailman_Exception(
+            'Failed to parse HTML',
+            Services_Mailman_Exception::HTML_PARSE
+        );
     }
 
     /**
@@ -389,9 +416,15 @@ class Services_Mailman
         if ($h5 && $h5->item(0)->nodeValue == 'Successfully subscribed:') {
             return $this;
         } elseif ($h5) {
-            throw new Services_Mailman_Exception(trim($h5->item(0)->nodeValue, ':'));
+            throw new Services_Mailman_Exception(
+                trim($h5->item(0)->nodeValue, ':'),
+                Services_Mailman_Exception::HTML_PARSE
+            );
         }
-        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
+        throw new Services_Mailman_Exception(
+            'Failed to parse HTML',
+            Services_Mailman_Exception::HTML_PARSE
+        );
     }
 
     /**
@@ -434,7 +467,8 @@ class Services_Mailman
         if (!is_string($email)) {
             throw new Services_Mailman_Exception(
                 'setOption() expects parameter 1 to be string, ' .
-                gettype($email) . ' given'
+                gettype($email) . ' given',
+                Services_Mailman_Exception::USER_INPUT
             );
         }
         $path = '/options/' . $this->list . '/' . str_replace('@', '--at--', $email);
@@ -490,7 +524,10 @@ class Services_Mailman
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
         } else {
-            throw new Services_Mailman_Exception(Services_Mailman_Exception::INVALID_OPTION);
+            throw new Services_Mailman_Exception(
+                'Invalid option',
+                Services_Mailman_Exception::INVALID_OPTION
+            );
         }
         $query = http_build_query($query, '', '&');
         $url = dirname($this->adminUrl) . $path . '?' . $query;
@@ -505,15 +542,16 @@ class Services_Mailman
         if ($query->item(0)) {
             return $query->item(0)->nodeValue;
         }
-        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
+        throw new Services_Mailman_Exception(
+            'Failed to parse HTML',
+            Services_Mailman_Exception::HTML_PARSE
+        );
     }
 
     /**
      * List members
      *
      * @return array  Returns two nested arrays, the first contains email addresses, the second contains names
-     *
-     * @throws Services_Mailman_Exception
      */
     public function members()
     {
@@ -587,7 +625,10 @@ class Services_Mailman
         if (preg_match('#version ([\d-.]+)#is', $content, $m)) {
             return array_pop($m);
         }
-        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
+        throw new Services_Mailman_Exception(
+            'Failed to parse HTML',
+            Services_Mailman_Exception::HTML_PARSE
+        );
     }
 } //end
 //eof

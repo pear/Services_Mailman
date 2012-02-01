@@ -48,4 +48,4 @@ try {
 ?>
 
 --EXPECT--
-Caught exception: Failed to parse HTML.
+Caught exception: Failed to parse HTML
