@@ -140,7 +140,7 @@ class Services_Mailman
         }
         $string = filter_var($string, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$string) {
-            throw new Services_Mailman_Exception('Invalid URL');
+            throw new Services_Mailman_Exception(Services_Mailman_Exception::INVALID_URL);
         }
         $this->adminUrl = trim($string, '/');
         return $this;
@@ -193,7 +193,7 @@ class Services_Mailman
     {
         $url = filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
         if (!$url) {
-            throw new Services_Mailman_Exception('Invalid URL');
+            throw new Services_Mailman_Exception(Services_Mailman_Exception::INVALID_URL);
         }
         try {
             $this->request->setUrl($url);
@@ -205,7 +205,7 @@ class Services_Mailman
         if (strlen($html)>5) {
             return $html;
         }
-        throw new Services_Mailman_Exception('Could not fetch HTML.');
+        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_FETCH);
     }
 
     /**
@@ -232,7 +232,7 @@ class Services_Mailman
         $descs = $xpath->query('/html/body/table[1]/tr/td[2]');
         $count = $names->length;
         if (!$count) {
-            throw new Services_Mailman_Exception('Failed to parse HTML.');
+            throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
         }
         $a = array();
         for ($i=0;$i < $count;$i++) {
@@ -336,10 +336,6 @@ class Services_Mailman
         $query = http_build_query($query, '', '&');
         $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
-        if (!$html) {
-            throw new Services_Mailman_Exception('Unable to fetch HTML.');
-        }
-
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
@@ -348,14 +344,13 @@ class Services_Mailman
         $h5 = $xpath->query('/html/body/h5');
         $h3 = $xpath->query('/html/body/h3');
         libxml_clear_errors();
-
         if ($h5->item(0) && $h5->item(0)->nodeValue == 'Successfully Unsubscribed:') {
             return $this;
         }
         if ($h3) {
             throw new Services_Mailman_Exception(trim($h3->item(0)->nodeValue, ':'));
         }
-        throw new Services_Mailman_Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
     }
 
     /**
@@ -384,10 +379,6 @@ class Services_Mailman
         $query = http_build_query($query, '', '&');
         $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
-        if (!$html) {
-            throw new Services_Mailman_Exception('Unable to fetch HTML.');
-        }
-
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
@@ -395,13 +386,12 @@ class Services_Mailman
         $xpath = new DOMXPath($doc);
         $h5 = $xpath->query('/html/body/h5');
         libxml_clear_errors();
-
         if ($h5 && $h5->item(0)->nodeValue == 'Successfully subscribed:') {
             return $this;
         } elseif ($h5) {
             throw new Services_Mailman_Exception(trim($h5->item(0)->nodeValue, ':'));
         }
-        throw new Services_Mailman_Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
     }
 
     /**
@@ -500,7 +490,7 @@ class Services_Mailman
             $query['options-submit'] = 'Submit+My+Changes';
             $xp = "//input[@name='$option' and @checked]/@value";
         } else {
-            throw new Services_Mailman_Exception('Invalid option.');
+            throw new Services_Mailman_Exception(Services_Mailman_Exception::INVALID_OPTION);
         }
         $query = http_build_query($query, '', '&');
         $url = dirname($this->adminUrl) . $path . '?' . $query;
@@ -515,7 +505,7 @@ class Services_Mailman
         if ($query->item(0)) {
             return $query->item(0)->nodeValue;
         }
-        throw new Services_Mailman_Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
     }
 
     /**
@@ -532,9 +522,6 @@ class Services_Mailman
         $query = http_build_query($query, '', '&');
         $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
-        if (!$html) {
-            throw new Services_Mailman_Exception('Unable to fetch HTML.');
-        }
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
@@ -542,7 +529,6 @@ class Services_Mailman
         $xpath = new DOMXPath($doc);
         $letters = $xpath->query('/html/body/form/center[1]/table/tr[2]/td/center/a');
         libxml_clear_errors();
-
         if ($letters->length>0) {
             $letters = range('a', 'z');
         } else {
@@ -556,9 +542,6 @@ class Services_Mailman
                 $query = http_build_query($query, '', '&');
                 $url = $this->adminUrl . $path . '?' . $query;
                 $html = $this->fetch($url);
-            }
-            if (!$html) {
-                throw new Services_Mailman_Exception('Unable to fetch HTML.');
             }
             libxml_use_internal_errors(true);
             $doc = new DOMDocument();
@@ -594,9 +577,6 @@ class Services_Mailman
         $query = http_build_query($query, '', '&');
         $url = $this->adminUrl . $path . '?' . $query;
         $html = $this->fetch($url);
-        if (!$html) {
-            throw new Services_Mailman_Exception('Unable to fetch HTML.');
-        }
         libxml_use_internal_errors(true);
         $doc = new DOMDocument();
         $doc->preserveWhiteSpace = false;
@@ -607,7 +587,7 @@ class Services_Mailman
         if (preg_match('#version ([\d-.]+)#is', $content, $m)) {
             return array_pop($m);
         }
-        throw new Services_Mailman_Exception('Failed to parse HTML.');
+        throw new Services_Mailman_Exception(Services_Mailman_Exception::HTML_PARSE);
     }
 } //end
 //eof

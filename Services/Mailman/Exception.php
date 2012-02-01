@@ -52,5 +52,8 @@
  */
 class Services_Mailman_Exception extends Exception
 {
-
+    define('INVALID_URL', 'Invalid URL');
+    define('HTML_FETCH', 'Could not fetch HTML');
+    define('HTML_PARSE', 'Failed to parse HTML');
+    define('INVALID_OPTION', 'Invalid Option');
 }
