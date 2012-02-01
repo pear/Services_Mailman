@@ -523,7 +523,7 @@ class Services_Mailman
     /**
      * List members
      *
-     * @return array  Returns a lits of members names and email addresses
+     * @return array  Returns two nested arrays, the first contains email addresses, the second contains names
      *
      * @throws {@link Services_Mailman_Exception}
      */
