@@ -1,0 +1,31 @@
+{
+    "authors": [
+        {
+            "email": "hm2k@php.net",
+            "name": "James Wade",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Services_Mailman": "./"
+        }
+    },
+    "description": "Allows the easy integration of Mailman into a dynamic website without using Python or requiring permission to Mailman binaries",
+    "include-path": [
+        "./"
+    ],
+    "license": "BSD License",
+    "name": "pear/services_mailman",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Services_Mailman",
+        "source": "https://github.com/pear/Services_Mailman"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
