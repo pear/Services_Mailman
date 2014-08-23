@@ -33,11 +33,11 @@
  *
  * @category  Services
  * @package   Mailman
- * @author    James Wade <hm2k@php.net>
+ * @author    James Wade
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   SVN: @package_version@
- * @link      http://php-mailman.sf.net/
+ * @link      http://php-mailman.sourceforge.net/
  */
 
 if (!defined('PHPUnit_MAIN_METHOD')) {
@@ -57,11 +57,11 @@ require_once 'PHPUnit/TextUI/TestRunner.php';
  *
  * @category  Services
  * @package   Services_Mailman
- * @author    James Wade <hm2k@php.net>
+ * @author    James Wade
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   Release: @package_version@
- * @link      http://php-mailman.sf.net/
+ * @link      http://php-mailman.sourceforge.net/
  */
 class Services_Mailman_AllTests
 {
