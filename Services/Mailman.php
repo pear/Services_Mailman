@@ -413,18 +413,19 @@ class Services_Mailman
         $xpath = new DOMXPath($doc);
         $h5 = $xpath->query('/html/body/h5');
         libxml_clear_errors();
-        if ($h5 && $h5->item(0)->nodeValue == 'Successfully subscribed:') {
-            return $this;
-        } elseif ($h5) {
-            throw new Services_Mailman_Exception(
-                trim($h5->item(0)->nodeValue, ':'),
-                Services_Mailman_Exception::HTML_PARSE
-            );
+        if (!is_object($h5) || $h5->length == 0) {
+            return false;
         }
-        throw new Services_Mailman_Exception(
-            'Failed to parse HTML',
-            Services_Mailman_Exception::HTML_PARSE
-        );
+        if ($h5->item(0)->nodeValue) {
+            if ($h5->item(0)->nodeValue == 'Successfully subscribed:') {
+                return $this;
+            } else {
+                throw new Services_Mailman_Exception(
+                    trim($h5->item(0)->nodeValue, ':'),
+                    Services_Mailman_Exception::HTML_PARSE
+                );
+            }
+        }
     }
 
     /**
