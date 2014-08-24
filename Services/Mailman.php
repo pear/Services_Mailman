@@ -33,11 +33,11 @@
  *
  * @category  Services
  * @package   Services_Mailman
- * @author    James Wade <hm2k@php.net>
+ * @author    James Wade
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   GIT: $Id:$
- * @link      http://php-mailman.sf.net/
+ * @link      http://php-mailman.sourceforge.net/
  */
 
 require_once 'HTTP/Request2.php';
@@ -48,11 +48,11 @@ require_once 'Services/Mailman/Exception.php';
  *
  * @category  Services
  * @package   Services_Mailman
- * @author    James Wade <hm2k@php.net>
+ * @author    James Wade
  * @copyright 2011 James Wade
  * @license   http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @version   Release: @package_version@
- * @link      http://php-mailman.sf.net/
+ * @link      http://php-mailman.sourceforge.net/
  */
 class Services_Mailman
 {
@@ -413,18 +413,19 @@ class Services_Mailman
         $xpath = new DOMXPath($doc);
         $h5 = $xpath->query('/html/body/h5');
         libxml_clear_errors();
-        if ($h5 && $h5->item(0)->nodeValue == 'Successfully subscribed:') {
-            return $this;
-        } elseif ($h5) {
-            throw new Services_Mailman_Exception(
-                trim($h5->item(0)->nodeValue, ':'),
-                Services_Mailman_Exception::HTML_PARSE
-            );
+        if (!is_object($h5) || $h5->length == 0) {
+            return false;
         }
-        throw new Services_Mailman_Exception(
-            'Failed to parse HTML',
-            Services_Mailman_Exception::HTML_PARSE
-        );
+        if ($h5->item(0)->nodeValue) {
+            if ($h5->item(0)->nodeValue == 'Successfully subscribed:') {
+                return $this;
+            } else {
+                throw new Services_Mailman_Exception(
+                    trim($h5->item(0)->nodeValue, ':'),
+                    Services_Mailman_Exception::HTML_PARSE
+                );
+            }
+        }
     }
 
     /**

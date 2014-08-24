@@ -6,8 +6,8 @@
  <description>Allows the easy integration of Mailman into a dynamic website without using Python or requiring permission to Mailman binaries</description>
  <lead>
   <name>James Wade</name>
-  <user>hm2k</user>
-  <email>hm2k@php.net</email>
+  <user>jpswade</user>
+  <email>jpswade@php.net</email>
   <active>yes</active>
  </lead>
  <date>2012-01-31</date>
