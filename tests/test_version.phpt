@@ -28,4 +28,4 @@ echo $mailman->version();
 
 ?>
 --EXPECT--
-2.1.14-1
+2.1.20
