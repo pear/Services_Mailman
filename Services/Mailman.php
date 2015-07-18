@@ -269,6 +269,80 @@ class Services_Mailman
     }
 
     /**
+     * Parse and Return General List info
+     *
+     * (ie: <domain.com>/mailman/admin/<listname>)
+     *
+     * @param string $string list name
+     *
+     * @return string Return an array of list information 
+     *
+     * @throws Services_Mailman_Exception
+     */
+    public function listinfo($string)
+    {
+        if (!is_string($string)) {
+            throw new Services_Mailman_Exception(
+                'member() expects parameter 1 to be string, ' .
+                gettype($string) . ' given',
+                Services_Mailman_Exception::USER_INPUT
+            );
+        }
+        $path  = '/' . $string;
+        $query = array(
+            'adminpw'           => $this->adminPw
+        );
+
+        $query = http_build_query($query, '', '&');
+        $url   = $this->adminUrl . $path . '?' . $query;
+        $html  = $this->fetch($url);
+        libxml_use_internal_errors(true);
+        $doc = new DOMDocument();
+        $doc->preserveWhiteSpace = false;
+        $doc->loadHTML($html);
+        $xpath = new DOMXPath($doc);
+
+        $a = array();
+        $queries = array();
+        $queries[] = $xpath->query("//input");
+        $queries[] = $xpath->query("//textarea");
+
+        $ignore_types = array(
+            'submit',
+            'hidden',
+        );
+
+         //get inputs
+         foreach ($queries as $query) {
+            foreach ($query as $item){
+               $type = strtolower($item->getAttribute('type'));
+               $type = (empty($type)) ? 'textarea' : $type;
+               if(in_array($type,$ignore_types)) continue; //ignore defined types
+
+               $name = $item->getAttribute('name');
+               $value = ($type === 'textarea') ? $item->nodeValue : $item->getAttribute('value');
+               $checked = $item->getAttribute('checked');
+
+               //initialize checkbox array if it's not set
+               if($type === 'checkbox' and !isset($a[$name])) $a[$name] = array();
+
+               //skip non checked values
+               if($type === 'radio' and $checked !== 'checked') continue;
+               if($type === 'checkbox' and $checked !== 'checked') continue;
+
+
+               if($type === 'checkbox') {
+                  $a[$name][] = $value;
+               } else {
+                  $a[$name] = $value;
+               }
+            }
+         }
+         ksort($a);
+         return $a;
+    }
+
+    /**
      * Find a member
      *
      * (ie: <domain.com>/mailman/admin/<listname>/members?findmember=<email-address>
@@ -633,3 +707,4 @@ class Services_Mailman
     }
 } //end
 //eof
+

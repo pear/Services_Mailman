@@ -9,9 +9,9 @@ $testList = 'test_example.co.uk';
 $testPW = 'password';
 
 //get html
-$html_success = file_get_contents('members-add-success.html');
+$html_success = file_get_contents(__DIR__ . '/members-add-success.html');
 $len_success = strlen($html_success);
-$html_fail = file_get_contents('members-add-fail.html');
+$html_fail = file_get_contents(__DIR__ . '/members-add-fail.html');
 $len_fail = strlen($html_fail);
 
 //set mailman
