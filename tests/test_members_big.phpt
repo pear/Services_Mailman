@@ -9,7 +9,7 @@ $testList = 'test_example.co.uk';
 $testPW = 'password';
 
 //get html
-$html=file_get_contents('members-big.html');
+$html=file_get_contents(dirname(__FILE__) . '/members-big.html');
 $length=strlen($html);
 
 //set mailman

@@ -7,7 +7,7 @@ Test for Services_Mailman lists
 $testURL = 'http://mail.cpanel.net/mailman/admin';
 
 //get html
-$html=file_get_contents('mail.cpanel.net.html');
+$html=file_get_contents(dirname(__FILE__) . '/mail.cpanel.net.html');
 $length=strlen($html);
 
 //set mailman
