@@ -671,26 +671,38 @@ class Services_Mailman
             'submit',
             'hidden',
         );
-         //get inputs
-         foreach ($queries as $query) {
-             foreach ($query as $item){
-                 $type = strtolower($item->getAttribute('type'));
-                 $type = (empty($type)) ? 'textarea' : $type;
-                 if(in_array($type,$ignore_types)) continue; //ignore defined types
-                 $name = $item->getAttribute('name');
-                 $value = ($type === 'textarea') ? $item->nodeValue : $item->getAttribute('value');
-                 $checked = $item->getAttribute('checked');
-                 //initialize checkbox array if it's not set
-                 if($type === 'checkbox' && !isset($a[$name])) $a[$name] = array();
-                 //skip non checked values
-                 if($type === 'radio' && $checked !== 'checked') continue;
-                 if($type === 'checkbox' && $checked !== 'checked') continue;
-                 if($type === 'checkbox') {
-                     $a[$name][] = $value;
-                 } else {
-                     $a[$name] = $value;
-                 }
-            }
+        //get inputs
+        foreach ($queries as $query) {
+            foreach ($query as $item) {
+                $type = strtolower($item->getAttribute('type'));
+                $type = (empty($type)) ? 'textarea' : $type;
+                if (in_array($type, $ignore_types)) {
+                   continue; //ignore defined types
+                }
+
+                $name = $item->getAttribute('name');
+                $value = ($type === 'textarea') ? $item->nodeValue : $item->getAttribute('value');
+                $checked = $item->getAttribute('checked');
+
+                //initialize checkbox array if it's not set
+                if ($type === 'checkbox' && !isset($a[$name])) {
+                    $a[$name] = array();
+                }
+
+                //skip non checked values
+                if ($type === 'radio' && $checked !== 'checked')  {
+                    continue;
+                }
+                if ($type === 'checkbox' && $checked !== 'checked') {
+                    continue;
+                }
+
+                if ($type === 'checkbox') {
+                    $a[$name][] = $value;
+                } else {
+                    $a[$name] = $value;
+                }
+           }
         }
         ksort($a);
         return $a;
